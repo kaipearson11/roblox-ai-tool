@@ -6,20 +6,21 @@
   <title>GameDev AI</title>
   <style>
     :root {
-      --bg-1: #030712;
-      --bg-2: #0b1220;
-      --panel: rgba(10, 16, 30, 0.78);
-      --panel-2: rgba(255, 255, 255, 0.05);
-      --panel-3: rgba(255, 255, 255, 0.08);
+      --bg: #050816;
+      --bg-2: #0a1024;
+      --panel: rgba(11, 18, 40, 0.82);
+      --panel-2: rgba(255, 255, 255, 0.04);
+      --panel-3: rgba(255, 255, 255, 0.07);
       --border: rgba(255, 255, 255, 0.08);
-      --text: #f8fafc;
-      --muted: #93a0bd;
-      --blue: #5b8cff;
-      --blue-2: #7c5cff;
-      --green: #35d399;
-      --red: #ff5c7a;
+      --text: #f5f7ff;
+      --muted: #9aa7c7;
+      --blue: #6990ff;
+      --blue-2: #7f5cff;
+      --cyan: #53d8ff;
+      --green: #38d39f;
+      --red: #ff5d7a;
       --shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
-      --radius-xl: 26px;
+      --radius-xl: 28px;
       --radius-lg: 20px;
       --radius-md: 16px;
     }
@@ -28,19 +29,19 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
     html, body {
       width: 100%;
       height: 100%;
       overflow: hidden;
-      background:
-        radial-gradient(circle at top left, rgba(91, 140, 255, 0.28), transparent 28%),
-        radial-gradient(circle at top right, rgba(124, 92, 255, 0.22), transparent 22%),
-        radial-gradient(circle at bottom center, rgba(53, 211, 153, 0.12), transparent 20%),
-        linear-gradient(180deg, var(--bg-2), var(--bg-1));
       color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(105, 144, 255, 0.24), transparent 28%),
+        radial-gradient(circle at top right, rgba(127, 92, 255, 0.18), transparent 22%),
+        radial-gradient(circle at bottom center, rgba(56, 211, 159, 0.08), transparent 18%),
+        linear-gradient(180deg, var(--bg-2), var(--bg));
     }
 
     body::before {
@@ -51,106 +52,105 @@
       background-image:
         linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
-      background-size: 28px 28px;
-      mask-image: radial-gradient(circle at center, black 40%, transparent 90%);
-      opacity: 0.8;
+      background-size: 30px 30px;
+      mask-image: radial-gradient(circle at center, black 40%, transparent 88%);
     }
 
     .app {
       display: flex;
+      gap: 16px;
       width: 100vw;
       height: 100vh;
       padding: 16px;
-      gap: 16px;
     }
 
     .sidebar {
-      width: 310px;
-      min-width: 310px;
+      width: 320px;
+      min-width: 320px;
+      border-radius: var(--radius-xl);
       background: var(--panel);
       backdrop-filter: blur(20px);
       border: 1px solid var(--border);
       box-shadow: var(--shadow);
-      border-radius: var(--radius-xl);
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      transition: width 0.25s ease, min-width 0.25s ease;
+      transition: width 0.22s ease, min-width 0.22s ease;
       position: relative;
     }
 
     .sidebar.collapsed {
-      width: 92px;
-      min-width: 92px;
+      width: 96px;
+      min-width: 96px;
     }
 
-    .sidebar::after {
+    .sidebar::before,
+    .main::before {
       content: "";
       position: absolute;
       inset: 0;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.05), transparent 25%),
-        radial-gradient(circle at top, rgba(91,140,255,0.14), transparent 28%);
       pointer-events: none;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.05), transparent 22%),
+        radial-gradient(circle at top, rgba(105, 144, 255, 0.12), transparent 30%);
     }
 
     .sidebar-top {
       position: relative;
       z-index: 1;
-      padding: 18px 16px 10px;
+      padding: 18px 16px 12px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 10px;
     }
 
-    .sidebar-top-left {
+    .brand-group {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
+      min-width: 0;
     }
 
     .logo {
-      width: 48px;
-      height: 48px;
-      min-width: 48px;
+      width: 50px;
+      height: 50px;
+      min-width: 50px;
       border-radius: 18px;
       display: grid;
       place-items: center;
-      background:
-        linear-gradient(135deg, rgba(91,140,255,0.95), rgba(124,92,255,0.95));
-      box-shadow: 0 14px 30px rgba(91, 140, 255, 0.35);
-      font-size: 22px;
+      font-size: 24px;
       font-weight: 800;
-      letter-spacing: 0.5px;
+      background: linear-gradient(135deg, var(--blue), var(--blue-2));
+      box-shadow: 0 14px 30px rgba(105, 144, 255, 0.3);
     }
 
-    .brand-wrap {
+    .brand-text {
       min-width: 0;
     }
 
     .brand {
-      font-size: 22px;
-      font-weight: 800;
-      letter-spacing: -0.02em;
+      font-size: 25px;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      line-height: 1;
     }
 
     .subtext {
-      font-size: 13px;
       color: var(--muted);
-      margin-top: 4px;
+      font-size: 13px;
+      margin-top: 5px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
-    .sidebar.collapsed .brand-wrap,
+    .sidebar.collapsed .brand-text,
     .sidebar.collapsed .section-title,
-    .sidebar.collapsed .project-name-text,
-    .sidebar.collapsed .project-meta,
-    .sidebar.collapsed .sidebar-footer-text,
-    .sidebar.collapsed .pro-card,
-    .sidebar.collapsed .usage-card {
+    .sidebar.collapsed .usage-card,
+    .sidebar.collapsed .project-text,
+    .sidebar.collapsed .promo-card,
+    .sidebar.collapsed .footer-note {
       display: none;
     }
 
@@ -162,16 +162,14 @@
       height: 46px;
       min-width: 46px;
       border-radius: 16px;
-      font-size: 20px;
+      font-size: 21px;
       cursor: pointer;
-      transition: 0.2s ease;
-      backdrop-filter: blur(12px);
+      transition: 0.18s ease;
     }
 
     .icon-btn:hover {
+      background: rgba(255,255,255,0.11);
       transform: translateY(-1px);
-      background: rgba(255,255,255,0.1);
-      border-color: rgba(255,255,255,0.14);
     }
 
     .sidebar-content {
@@ -179,17 +177,16 @@
       z-index: 1;
       display: flex;
       flex-direction: column;
-      flex: 1;
       min-height: 0;
+      flex: 1;
       padding: 0 14px 14px;
     }
 
     .usage-card {
-      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+      background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.03));
       border: 1px solid var(--border);
       border-radius: 18px;
       padding: 14px;
-      margin-top: 8px;
       margin-bottom: 14px;
     }
 
@@ -198,40 +195,35 @@
       align-items: center;
       justify-content: space-between;
       margin-bottom: 10px;
-      gap: 8px;
-    }
-
-    .usage-label {
       font-size: 13px;
       color: var(--muted);
     }
 
-    .usage-value {
-      font-size: 13px;
-      font-weight: 700;
+    .usage-top strong {
       color: white;
+      font-size: 14px;
     }
 
     .usage-bar {
       height: 10px;
+      background: rgba(255,255,255,0.06);
       border-radius: 999px;
-      background: rgba(255,255,255,0.07);
       overflow: hidden;
     }
 
     .usage-fill {
-      width: 68%;
+      width: 78%;
       height: 100%;
-      border-radius: 999px;
       background: linear-gradient(90deg, var(--blue), var(--blue-2));
+      border-radius: 999px;
     }
 
     .section-title {
+      color: #8fa0c8;
       font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.16em;
+      font-weight: 800;
+      letter-spacing: 0.15em;
       text-transform: uppercase;
-      color: #8593b4;
       margin-bottom: 10px;
       padding: 0 6px;
     }
@@ -253,8 +245,6 @@
     .chat::-webkit-scrollbar-thumb {
       background: rgba(255,255,255,0.12);
       border-radius: 999px;
-      border: 2px solid transparent;
-      background-clip: padding-box;
     }
 
     .project-item {
@@ -262,36 +252,34 @@
       align-items: center;
       gap: 12px;
       padding: 13px 12px;
-      margin-bottom: 8px;
       border-radius: 18px;
       cursor: pointer;
+      margin-bottom: 8px;
       border: 1px solid transparent;
-      background: transparent;
-      transition: 0.22s ease;
+      transition: 0.18s ease;
     }
 
     .project-item:hover {
-      background: rgba(255,255,255,0.05);
-      border-color: rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.04);
+      border-color: rgba(255,255,255,0.05);
       transform: translateY(-1px);
     }
 
     .project-item.active {
-      background: linear-gradient(180deg, rgba(91,140,255,0.18), rgba(124,92,255,0.13));
-      border-color: rgba(111, 143, 255, 0.28);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+      background: linear-gradient(180deg, rgba(105,144,255,0.17), rgba(127,92,255,0.11));
+      border-color: rgba(105, 144, 255, 0.22);
     }
 
     .project-icon {
-      width: 42px;
-      height: 42px;
-      min-width: 42px;
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
       border-radius: 14px;
       display: grid;
       place-items: center;
       font-size: 18px;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.07);
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.06);
     }
 
     .project-text {
@@ -299,126 +287,102 @@
       flex: 1;
     }
 
-    .project-name-text {
-      font-size: 15px;
-      font-weight: 700;
+    .project-name {
+      font-size: 16px;
+      font-weight: 800;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      color: #f5f8ff;
     }
 
     .project-meta {
       font-size: 12px;
       color: var(--muted);
       margin-top: 4px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
     }
 
-    .pro-card {
+    .promo-card {
       background:
-        radial-gradient(circle at top right, rgba(124,92,255,0.22), transparent 38%),
-        linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.03));
+        radial-gradient(circle at top right, rgba(127,92,255,0.18), transparent 35%),
+        linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
       border: 1px solid var(--border);
       border-radius: 20px;
       padding: 16px;
       margin-bottom: 14px;
-      overflow: hidden;
-      position: relative;
     }
 
-    .pro-badge {
+    .promo-badge {
       display: inline-flex;
-      align-items: center;
-      gap: 6px;
+      padding: 7px 11px;
+      border-radius: 999px;
       font-size: 11px;
       font-weight: 800;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: white;
-      background: rgba(124,92,255,0.22);
-      border: 1px solid rgba(124,92,255,0.28);
-      padding: 7px 10px;
-      border-radius: 999px;
+      background: rgba(127,92,255,0.2);
+      border: 1px solid rgba(127,92,255,0.25);
       margin-bottom: 12px;
     }
 
-    .pro-title {
-      font-size: 17px;
-      font-weight: 800;
+    .promo-title {
+      font-size: 18px;
+      font-weight: 900;
       margin-bottom: 6px;
     }
 
-    .pro-text {
-      color: var(--muted);
+    .promo-text {
       font-size: 13px;
-      line-height: 1.5;
+      line-height: 1.55;
+      color: var(--muted);
       margin-bottom: 14px;
     }
 
-    .pro-btn {
+    .promo-btn {
       width: 100%;
       border: none;
-      border-radius: 14px;
+      border-radius: 15px;
       padding: 12px 14px;
       font-size: 14px;
       font-weight: 800;
       color: white;
       cursor: pointer;
       background: linear-gradient(135deg, var(--blue), var(--blue-2));
-      box-shadow: 0 12px 26px rgba(91, 140, 255, 0.22);
-      transition: 0.2s ease;
+      transition: 0.18s ease;
     }
 
-    .pro-btn:hover {
+    .promo-btn:hover {
       transform: translateY(-1px);
-      filter: brightness(1.07);
+      filter: brightness(1.06);
     }
 
-    .sidebar-footer {
-      padding: 0 2px 0;
-    }
-
-    .sidebar-footer-text {
-      color: #8390ae;
+    .footer-note {
       font-size: 11px;
       line-height: 1.5;
+      color: #8894b2;
       padding: 0 6px;
     }
 
     .main {
       flex: 1;
       min-width: 0;
-      display: flex;
-      flex-direction: column;
+      border-radius: var(--radius-xl);
       background: var(--panel);
-      backdrop-filter: blur(18px);
+      backdrop-filter: blur(20px);
       border: 1px solid var(--border);
       box-shadow: var(--shadow);
-      border-radius: var(--radius-xl);
+      display: flex;
+      flex-direction: column;
       overflow: hidden;
       position: relative;
-    }
-
-    .main::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      background:
-        radial-gradient(circle at top right, rgba(91,140,255,0.12), transparent 18%),
-        linear-gradient(180deg, rgba(255,255,255,0.05), transparent 22%);
     }
 
     .topbar {
       position: relative;
       z-index: 1;
       padding: 20px 22px;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: space-between;
       gap: 16px;
       background: rgba(255,255,255,0.02);
@@ -426,20 +390,18 @@
 
     .topbar-left {
       min-width: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
     }
 
     .eyebrow {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      color: var(--muted);
       font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.12em;
+      font-weight: 800;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
     }
 
     .eyebrow-dot {
@@ -447,22 +409,23 @@
       height: 8px;
       border-radius: 50%;
       background: var(--green);
-      box-shadow: 0 0 18px rgba(53, 211, 153, 0.5);
+      box-shadow: 0 0 16px rgba(56, 211, 159, 0.45);
     }
 
     .project-title {
-      font-size: clamp(28px, 4vw, 44px);
+      font-size: clamp(34px, 4vw, 58px);
       font-weight: 900;
-      line-height: 1;
-      letter-spacing: -0.04em;
+      letter-spacing: -0.05em;
+      line-height: 0.95;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
     .project-subtitle {
-      font-size: 14px;
       color: var(--muted);
+      font-size: 15px;
+      margin-top: 8px;
     }
 
     .topbar-actions {
@@ -477,13 +440,12 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      border-radius: 999px;
       padding: 10px 14px;
+      border-radius: 999px;
       background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.08);
-      color: #dbe5ff;
+      border: 1px solid rgba(255,255,255,0.07);
       font-size: 13px;
-      font-weight: 700;
+      font-weight: 800;
     }
 
     .action-btn {
@@ -494,64 +456,58 @@
       font-weight: 800;
       color: white;
       cursor: pointer;
-      transition: 0.2s ease;
-      background: rgba(255,255,255,0.05);
+      transition: 0.18s ease;
     }
 
     .action-btn:hover {
       transform: translateY(-1px);
-      background: rgba(255,255,255,0.09);
     }
 
     .rename-btn {
-      background: linear-gradient(135deg, rgba(91,140,255,0.95), rgba(91,140,255,0.78));
-      border-color: rgba(111,143,255,0.28);
+      background: linear-gradient(135deg, var(--blue), #5f7cff);
     }
 
     .delete-btn {
-      background: linear-gradient(135deg, rgba(255,92,122,0.24), rgba(255,92,122,0.14));
-      border-color: rgba(255,92,122,0.22);
+      background: linear-gradient(135deg, rgba(255,93,122,0.22), rgba(255,93,122,0.1));
     }
 
-    .hero {
+    .stats {
       position: relative;
       z-index: 1;
-      padding: 18px 22px 10px;
-      display: flex;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 12px;
-      flex-wrap: wrap;
+      padding: 16px 22px;
       border-bottom: 1px solid rgba(255,255,255,0.05);
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
     }
 
-    .hero-card {
-      flex: 1;
-      min-width: 180px;
+    .stat-card {
       background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.06);
       border-radius: 18px;
       padding: 16px;
     }
 
-    .hero-label {
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
+    .stat-label {
       color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
       margin-bottom: 8px;
-      font-weight: 700;
     }
 
-    .hero-value {
+    .stat-value {
       font-size: 24px;
       font-weight: 900;
       letter-spacing: -0.03em;
     }
 
-    .hero-sub {
-      margin-top: 6px;
+    .stat-sub {
       color: var(--muted);
       font-size: 13px;
+      margin-top: 6px;
+      line-height: 1.45;
     }
 
     .chat {
@@ -560,28 +516,24 @@
       flex: 1;
       min-height: 0;
       overflow-y: auto;
-      padding: 24px 22px;
+      padding: 22px;
       display: flex;
       flex-direction: column;
-      gap: 18px;
+      gap: 20px;
     }
 
     .message-row {
       display: flex;
       width: 100%;
-      animation: fadeUp 0.25s ease;
+      animation: fadeUp 0.24s ease;
     }
 
     .message-row.user {
       justify-content: flex-end;
     }
 
-    .message-row.ai {
-      justify-content: flex-start;
-    }
-
     .message-shell {
-      max-width: min(860px, 88%);
+      max-width: min(880px, 90%);
       display: flex;
       gap: 12px;
       align-items: flex-end;
@@ -592,38 +544,37 @@
     }
 
     .avatar {
-      width: 42px;
-      height: 42px;
-      min-width: 42px;
-      border-radius: 16px;
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      border-radius: 15px;
       display: grid;
       place-items: center;
       font-size: 18px;
-      font-weight: 800;
+      font-weight: 900;
       border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(255,255,255,0.05);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.22);
+      box-shadow: 0 10px 22px rgba(0,0,0,0.25);
     }
 
     .avatar.ai {
-      background: linear-gradient(135deg, rgba(91,140,255,0.95), rgba(124,92,255,0.9));
+      background: linear-gradient(135deg, var(--blue), var(--blue-2));
     }
 
     .avatar.user {
-      background: linear-gradient(135deg, rgba(53,211,153,0.92), rgba(41,182,246,0.85));
+      background: linear-gradient(135deg, var(--green), var(--cyan));
     }
 
-    .message-card {
+    .message-content {
+      min-width: 0;
       display: flex;
       flex-direction: column;
       gap: 6px;
-      min-width: 0;
     }
 
     .message-meta {
       font-size: 12px;
+      font-weight: 800;
       color: var(--muted);
-      font-weight: 700;
       padding: 0 4px;
     }
 
@@ -635,32 +586,39 @@
       line-height: 1.65;
       white-space: pre-wrap;
       word-break: break-word;
-      overflow-wrap: anywhere;
       border: 1px solid rgba(255,255,255,0.08);
       box-shadow: 0 14px 28px rgba(0,0,0,0.18);
     }
 
     .bubble.ai {
-      background: linear-gradient(180deg, rgba(255,255,255,0.075), rgba(255,255,255,0.045));
-      border-top-left-radius: 8px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.045));
+      border-top-left-radius: 10px;
     }
 
     .bubble.user {
-      background: linear-gradient(135deg, rgba(91,140,255,1), rgba(124,92,255,0.96));
-      border-top-right-radius: 8px;
+      background: linear-gradient(135deg, var(--blue), var(--blue-2));
+      border-top-right-radius: 10px;
+    }
+
+    .bubble pre {
+      margin-top: 12px;
+      padding: 14px;
+      border-radius: 16px;
+      overflow-x: auto;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255,255,255,0.06);
+      font-size: 13px;
+      line-height: 1.5;
     }
 
     .bubble code {
-      background: rgba(0,0,0,0.22);
-      padding: 2px 6px;
-      border-radius: 8px;
-      font-size: 0.95em;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     }
 
     .typing {
       display: inline-flex;
-      align-items: center;
       gap: 6px;
+      align-items: center;
       height: 18px;
     }
 
@@ -668,48 +626,32 @@
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background: #dce5ff;
-      animation: pulse 1s infinite ease-in-out;
+      background: #dbe5ff;
+      animation: bounce 1s infinite ease-in-out;
     }
 
-    .typing span:nth-child(2) { animation-delay: 0.14s; }
-    .typing span:nth-child(3) { animation-delay: 0.28s; }
-
-    @keyframes pulse {
-      0%, 100% { transform: translateY(0); opacity: 0.45; }
-      50% { transform: translateY(-4px); opacity: 1; }
-    }
-
-    @keyframes fadeUp {
-      from {
-        opacity: 0;
-        transform: translateY(8px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
+    .typing span:nth-child(2) { animation-delay: 0.12s; }
+    .typing span:nth-child(3) { animation-delay: 0.24s; }
 
     .quick-prompts {
       position: relative;
       z-index: 1;
       display: flex;
-      gap: 10px;
       flex-wrap: wrap;
+      gap: 10px;
       padding: 0 22px 16px;
     }
 
     .quick-btn {
       border: 1px solid rgba(255,255,255,0.08);
       background: rgba(255,255,255,0.04);
-      color: #e8eeff;
-      font-size: 13px;
-      font-weight: 700;
+      color: white;
       padding: 10px 14px;
       border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
       cursor: pointer;
-      transition: 0.2s ease;
+      transition: 0.18s ease;
     }
 
     .quick-btn:hover {
@@ -721,47 +663,38 @@
       position: relative;
       z-index: 1;
       padding: 18px 22px 22px;
-      border-top: 1px solid rgba(255,255,255,0.08);
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.03));
+      border-top: 1px solid rgba(255,255,255,0.06);
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.03));
     }
 
     .composer {
-      background: rgba(255,255,255,0.05);
+      background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.04));
       border: 1px solid rgba(255,255,255,0.08);
       border-radius: 24px;
       padding: 12px;
-      box-shadow: 0 16px 40px rgba(0,0,0,0.18);
-    }
-
-    .input-bar {
-      display: flex;
-      gap: 12px;
-      align-items: flex-end;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.16);
     }
 
     .textarea-wrap {
-      flex: 1;
-      min-width: 0;
       position: relative;
     }
 
     textarea {
       width: 100%;
       resize: none;
-      min-height: 72px;
+      min-height: 86px;
       max-height: 220px;
       border: none;
       outline: none;
       background: transparent;
       color: white;
       font-size: 17px;
-      line-height: 1.5;
-      padding: 12px 14px;
+      line-height: 1.55;
+      padding: 14px;
     }
 
     textarea::placeholder {
-      color: #8492b0;
+      color: #8b99bb;
     }
 
     .composer-bottom {
@@ -769,11 +702,11 @@
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      padding: 4px 6px 2px;
+      padding: 6px 6px 2px;
       flex-wrap: wrap;
     }
 
-    .composer-hint {
+    .hint {
       color: var(--muted);
       font-size: 12px;
     }
@@ -791,7 +724,7 @@
       border-radius: 14px;
       padding: 10px 14px;
       font-size: 13px;
-      font-weight: 700;
+      font-weight: 800;
       cursor: pointer;
     }
 
@@ -799,46 +732,54 @@
       border: none;
       border-radius: 16px;
       padding: 13px 18px;
-      min-width: 120px;
+      min-width: 132px;
       font-size: 15px;
       font-weight: 900;
-      letter-spacing: 0.01em;
       color: white;
       background: linear-gradient(135deg, var(--blue), var(--blue-2));
-      box-shadow: 0 14px 28px rgba(91, 140, 255, 0.32);
+      box-shadow: 0 14px 28px rgba(105, 144, 255, 0.28);
       cursor: pointer;
-      transition: 0.2s ease;
+      transition: 0.18s ease;
     }
 
     .send-btn:hover {
       transform: translateY(-1px);
-      filter: brightness(1.06);
+      filter: brightness(1.05);
     }
 
-    .send-btn:disabled {
-      opacity: 0.65;
-      cursor: not-allowed;
-      transform: none;
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); opacity: 0.45; }
+      50% { transform: translateY(-4px); opacity: 1; }
     }
 
-    @media (max-width: 1000px) {
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 1100px) {
+      .stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 900px) {
       .app {
         padding: 10px;
         gap: 10px;
       }
 
       .sidebar {
-        width: 92px;
-        min-width: 92px;
+        width: 96px;
+        min-width: 96px;
       }
 
-      .brand-wrap,
+      .brand-text,
+      .usage-card,
       .section-title,
-      .project-name-text,
-      .project-meta,
-      .sidebar-footer-text,
-      .pro-card,
-      .usage-card {
+      .project-text,
+      .promo-card,
+      .footer-note {
         display: none;
       }
 
@@ -846,12 +787,12 @@
         padding: 16px;
       }
 
-      .hero {
-        padding: 12px 16px 8px;
+      .stats {
+        padding: 14px 16px;
       }
 
       .chat {
-        padding: 18px 16px;
+        padding: 16px;
       }
 
       .quick-prompts {
@@ -872,7 +813,7 @@
       .sidebar.collapsed {
         width: 100%;
         min-width: 100%;
-        max-height: 92px;
+        max-height: 94px;
       }
 
       .sidebar-content {
@@ -885,21 +826,16 @@
       }
 
       .topbar-actions {
-        width: 100%;
         justify-content: flex-start;
+        width: 100%;
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
       }
 
       .message-shell {
         max-width: 100%;
-      }
-
-      .quick-prompts {
-        gap: 8px;
-      }
-
-      .quick-btn {
-        width: 100%;
-        text-align: left;
       }
 
       .composer-bottom {
@@ -908,12 +844,7 @@
       }
 
       .composer-actions {
-        width: 100%;
         justify-content: space-between;
-      }
-
-      .send-btn {
-        min-width: 0;
       }
     }
   </style>
@@ -922,13 +853,14 @@
   <div class="app">
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-top">
-        <div class="sidebar-top-left">
+        <div class="brand-group">
           <div class="logo">G</div>
-          <div class="brand-wrap">
+          <div class="brand-text">
             <div class="brand">GameDev AI</div>
             <div class="subtext">Build smarter. Ship faster.</div>
           </div>
         </div>
+
         <div style="display:flex; gap:10px;">
           <button class="icon-btn" id="newProjectBtn" title="New Project">＋</button>
           <button class="icon-btn" id="toggleSidebar" title="Toggle Sidebar">☰</button>
@@ -938,8 +870,8 @@
       <div class="sidebar-content">
         <div class="usage-card">
           <div class="usage-top">
-            <div class="usage-label">Creative Power</div>
-            <div class="usage-value">68%</div>
+            <span>Creative Power</span>
+            <strong>78%</strong>
           </div>
           <div class="usage-bar">
             <div class="usage-fill"></div>
@@ -949,17 +881,15 @@
         <div class="section-title">Projects</div>
         <div class="projects" id="projectsList"></div>
 
-        <div class="pro-card">
-          <div class="pro-badge">⚡ Future Pro</div>
-          <div class="pro-title">Level up your workflow</div>
-          <div class="pro-text">Save better prompts, unlock advanced tools, and turn your app into a real product.</div>
-          <button class="pro-btn" type="button">Coming Soon</button>
+        <div class="promo-card">
+          <div class="promo-badge">⚡ Future Pro</div>
+          <div class="promo-title">Turn this into a real business</div>
+          <div class="promo-text">Add saved prompts, premium tools, better exports, and subscriber-only features later.</div>
+          <button class="promo-btn" type="button">Coming Soon</button>
         </div>
 
-        <div class="sidebar-footer">
-          <div class="sidebar-footer-text">
-            GameDev AI is an independent tool and is not affiliated with any game platform.
-          </div>
+        <div class="footer-note">
+          GameDev AI is an independent tool and is not affiliated with any game platform.
         </div>
       </div>
     </aside>
@@ -982,43 +912,48 @@
         </div>
       </div>
 
-      <div class="hero">
-        <div class="hero-card">
-          <div class="hero-label">Best For</div>
-          <div class="hero-value">Lua + Design</div>
-          <div class="hero-sub">Scripts, gameplay loops, economies, UI, progression.</div>
+      <div class="stats">
+        <div class="stat-card">
+          <div class="stat-label">Best For</div>
+          <div class="stat-value">Lua + Design</div>
+          <div class="stat-sub">Scripts, gameplay loops, economies, UI, and progression systems.</div>
         </div>
-        <div class="hero-card">
-          <div class="hero-label">Response Style</div>
-          <div class="hero-value">Fast + Clear</div>
-          <div class="hero-sub">Straight answers that are easy to use in projects.</div>
+        <div class="stat-card">
+          <div class="stat-label">Response Style</div>
+          <div class="stat-value">Fast + Clear</div>
+          <div class="stat-sub">Practical answers you can actually use right away.</div>
         </div>
-        <div class="hero-card">
-          <div class="hero-label">Current Mode</div>
-          <div class="hero-value">Builder</div>
-          <div class="hero-sub">Turn ideas into real game systems and features.</div>
+        <div class="stat-card">
+          <div class="stat-label">Current Mode</div>
+          <div class="stat-value">Builder</div>
+          <div class="stat-sub">Turn rough ideas into real systems and features.</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Focus</div>
+          <div class="stat-value">Game Systems</div>
+          <div class="stat-sub">Mechanics, balance, loops, rewards, and player retention.</div>
         </div>
       </div>
 
       <div class="chat" id="chat"></div>
 
       <div class="quick-prompts">
-        <button class="quick-btn" data-prompt="Make me a fun progression-based game idea I can actually build.">Game idea</button>
-        <button class="quick-btn" data-prompt="Write a clean Lua script for a collectible system.">Collectible script</button>
-        <button class="quick-btn" data-prompt="Help me make a monetization system that feels fair.">Monetization</button>
-        <button class="quick-btn" data-prompt="Give me a game loop that keeps players coming back.">Game loop</button>
+        <button class="quick-btn" data-prompt="Make me a fun progression-based Roblox game idea I can actually build.">Game idea</button>
+        <button class="quick-btn" data-prompt="Write a clean Roblox collectible system script.">Collectible script</button>
+        <button class="quick-btn" data-prompt="Help me create a fair monetization system for my game.">Monetization</button>
+        <button class="quick-btn" data-prompt="Give me a strong gameplay loop that keeps players coming back.">Game loop</button>
+        <button class="quick-btn" data-prompt="Make me a simple inventory system for Roblox.">Inventory system</button>
       </div>
 
       <div class="input-wrap">
         <div class="composer">
-          <div class="input-bar">
-            <div class="textarea-wrap">
-              <textarea id="messageInput" placeholder="Ask for scripts, mechanics, game ideas, UI help, balancing, bugs, progression systems, and more..."></textarea>
-            </div>
+          <div class="textarea-wrap">
+            <textarea id="messageInput" placeholder="Ask for scripts, mechanics, game ideas, UI help, balancing, bugs, progression systems, and more..."></textarea>
           </div>
 
           <div class="composer-bottom">
-            <div class="composer-hint">Enter to send • Shift + Enter for a new line</div>
+            <div class="hint">Enter to send • Shift + Enter for a new line</div>
+
             <div class="composer-actions">
               <button class="ghost-btn" id="clearInputBtn" type="button">Clear</button>
               <button class="send-btn" id="sendBtn" type="button">Send Message</button>
@@ -1059,7 +994,7 @@
       if (savedProjects) {
         try {
           projects = JSON.parse(savedProjects);
-        } catch (error) {
+        } catch {
           projects = [];
         }
       }
@@ -1089,7 +1024,7 @@
           {
             role: "ai",
             content:
-              "Welcome to GameDev AI.\n\nTell me what you want to build and I’ll help with ideas, scripts, systems, balancing, UI, debugging, and progression."
+              "Welcome to GameDev AI.\n\nTell me what you want to build and I’ll help with ideas, scripts, mechanics, balancing, UI, debugging, and progression."
           }
         ]
       };
@@ -1112,10 +1047,13 @@
       projects.forEach((project, index) => {
         const item = document.createElement("div");
         item.className = "project-item" + (project.id === currentProjectId ? " active" : "");
+
+        const icon = index % 4 === 0 ? "🎮" : index % 4 === 1 ? "⚙️" : index % 4 === 2 ? "💡" : "🧩";
+
         item.innerHTML = `
-          <div class="project-icon">${index % 3 === 0 ? "🎮" : index % 3 === 1 ? "⚙️" : "💡"}</div>
+          <div class="project-icon">${icon}</div>
           <div class="project-text">
-            <div class="project-name-text">${escapeHtml(project.name)}</div>
+            <div class="project-name">${escapeHtml(project.name)}</div>
             <div class="project-meta">${project.messages.length} message${project.messages.length === 1 ? "" : "s"}</div>
           </div>
         `;
@@ -1149,51 +1087,50 @@
       chat.scrollTop = chat.scrollHeight;
     }
 
-    function createAvatar(role) {
-      const avatar = document.createElement("div");
-      avatar.className = `avatar ${role === "user" ? "user" : "ai"}`;
-      avatar.textContent = role === "user" ? "U" : "AI";
-      return avatar;
-    }
-
-    function createMeta(role) {
-      const meta = document.createElement("div");
-      meta.className = "message-meta";
-      meta.textContent = role === "user" ? "You" : "GameDev AI";
-      return meta;
+    function formatMessageContent(text) {
+      return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/```([\s\S]*?)```/g, "<pre><code>$1</code></pre>");
     }
 
     function addMessageToChat(role, content, shouldScroll = true, isTyping = false) {
       const row = document.createElement("div");
-      row.className = `message-row ${role}`;
+      row.className = `message-row ${role === "user" ? "user" : "ai"}`;
 
       const shell = document.createElement("div");
       shell.className = "message-shell";
 
-      const avatar = createAvatar(role);
-      const card = document.createElement("div");
-      card.className = "message-card";
+      const avatar = document.createElement("div");
+      avatar.className = `avatar ${role === "user" ? "user" : "ai"}`;
+      avatar.textContent = role === "user" ? "U" : "AI";
 
-      const meta = createMeta(role);
+      const contentWrap = document.createElement("div");
+      contentWrap.className = "message-content";
+
+      const meta = document.createElement("div");
+      meta.className = "message-meta";
+      meta.textContent = role === "user" ? "You" : "GameDev AI";
+
       const bubble = document.createElement("div");
-      bubble.className = `bubble ${role}`;
+      bubble.className = `bubble ${role === "user" ? "user" : "ai"}`;
 
       if (isTyping) {
         bubble.innerHTML = `
           <div class="typing">
-            <span></span>
-            <span></span>
-            <span></span>
+            <span></span><span></span><span></span>
           </div>
         `;
       } else {
-        bubble.textContent = content;
+        bubble.innerHTML = formatMessageContent(content);
       }
 
-      card.appendChild(meta);
-      card.appendChild(bubble);
+      contentWrap.appendChild(meta);
+      contentWrap.appendChild(bubble);
+
       shell.appendChild(avatar);
-      shell.appendChild(card);
+      shell.appendChild(contentWrap);
       row.appendChild(shell);
       chat.appendChild(row);
 
