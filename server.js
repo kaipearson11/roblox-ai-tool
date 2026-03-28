@@ -18,33 +18,23 @@ const openai = new OpenAI({
 app.use(express.json());
 app.use(express.static(__dirname));
 
+// Chat route
 app.post("/chat", async (req, res) => {
   try {
     const { message, history } = req.body;
-
-    if (!message) {
-      return res.status(400).json({ reply: "No message provided." });
-    }
-
-    const safeHistory = Array.isArray(history) ? history : [];
 
     const messages = [
       {
         role: "system",
         content:
-          "You are GameDev AI, a helpful assistant for game development. You help with Lua scripting, mechanics, balancing, UI, progression systems, monetization ideas, debugging, and creative brainstorming. Be clear, practical, and helpful."
+          "You are GameDev AI, a helpful assistant for game development. Help with Lua, scripts, mechanics, ideas, UI, and systems."
       },
-      ...safeHistory.map((msg) => ({
-        role:
-          msg.role === "assistant"
-            ? "assistant"
-            : msg.role === "system"
-            ? "system"
-            : msg.role === "ai"
-            ? "assistant"
-            : "user",
-        content: String(msg.content || "")
-      })),
+      ...(Array.isArray(history)
+        ? history.map((msg) => ({
+            role: msg.role === "ai" ? "assistant" : msg.role,
+            content: msg.content
+          }))
+        : []),
       {
         role: "user",
         content: message
@@ -53,28 +43,24 @@ app.post("/chat", async (req, res) => {
 
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
-      messages,
-      temperature: 0.7
+      messages
     });
 
     const reply =
-      completion.choices?.[0]?.message?.content ||
-      "I couldn't generate a response.";
+      completion.choices?.[0]?.message?.content || "No response.";
 
     res.json({ reply });
-  } catch (error) {
-    console.error("Chat error:", error);
-    res.status(500).json({
-      reply: "There was a server error while generating a response."
-    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ reply: "Server error." });
   }
 });
 
-// IMPORTANT: this makes any page load return index.html
-app.get("*", (req, res) => {
+// ✅ FIXED ROOT ROUTE (this is the important part)
+app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
 
 app.listen(PORT, () => {
-  console.log(`GameDev AI running on port ${PORT}`);
+  console.log("Server running on port " + PORT);
 });
