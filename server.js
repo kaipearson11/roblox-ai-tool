@@ -1,66 +1,125 @@
-const express = require("express");
-const path = require("path");
-const OpenAI = require("openai");
-require("dotenv").config();
+const sidebar = document.getElementById("sidebar");
+const openSidebar = document.getElementById("openSidebar");
+const closeSidebar = document.getElementById("closeSidebar");
 
-const app = express();
-const PORT = process.env.PORT || 3000;
+const chat = document.getElementById("chat");
+const form = document.getElementById("form");
+const input = document.getElementById("input");
+const typing = document.getElementById("typing");
 
-if (!process.env.OPENAI_API_KEY) {
-  console.error("Missing OPENAI_API_KEY in environment variables.");
-  process.exit(1);
+const projectList = document.getElementById("projectList");
+const newProjectBtn = document.getElementById("newProject");
+const renameBtn = document.getElementById("renameBtn");
+const deleteBtn = document.getElementById("deleteBtn");
+
+const projectTitle = document.getElementById("projectTitle");
+const projectSubtitle = document.getElementById("projectSubtitle");
+
+let projects = [];
+let current = null;
+
+/* SIDEBAR */
+closeSidebar.onclick = () => {
+  sidebar.classList.add("collapsed");
+  openSidebar.classList.remove("hidden");
+};
+
+openSidebar.onclick = () => {
+  sidebar.classList.remove("collapsed");
+  openSidebar.classList.add("hidden");
+};
+
+/* PROJECTS */
+function createProject() {
+  const id = Date.now();
+  const project = {
+    id,
+    name: "New Project",
+    messages: []
+  };
+
+  projects.unshift(project);
+  current = project;
+  renderProjects();
+  renderChat();
 }
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
-});
+function renderProjects() {
+  projectList.innerHTML = "";
 
-app.use(express.json());
-app.use(express.static(__dirname));
+  projects.forEach(p => {
+    const btn = document.createElement("button");
+    btn.textContent = p.name;
 
-// Chat route
-app.post("/chat", async (req, res) => {
-  try {
-    const { message, history } = req.body;
+    if (p === current) btn.classList.add("active");
 
-    const messages = [
-      {
-        role: "system",
-        content:
-          "You are GameDev AI, a helpful assistant for game development. Help with Lua, scripts, mechanics, ideas, UI, and systems."
-      },
-      ...(Array.isArray(history)
-        ? history.map((msg) => ({
-            role: msg.role === "ai" ? "assistant" : msg.role,
-            content: msg.content
-          }))
-        : []),
-      {
-        role: "user",
-        content: message
-      }
-    ];
+    btn.onclick = () => {
+      current = p;
+      renderProjects();
+      renderChat();
+    };
 
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages
-    });
+    projectList.appendChild(btn);
+  });
+}
 
-    const reply =
-      completion.choices?.[0]?.message?.content || "No response.";
+function renderChat() {
+  chat.innerHTML = "";
+  projectTitle.textContent = current.name;
 
-    res.json({ reply });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ reply: "Server error." });
-  }
-});
+  current.messages.forEach(m => {
+    const div = document.createElement("div");
+    div.className = "msg " + m.role;
+    div.textContent = m.text;
+    chat.appendChild(div);
+  });
+}
 
-// ✅ FIXED ROOT ROUTE (this is the important part)
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
-});
+/* CHAT */
+form.onsubmit = async (e) => {
+  e.preventDefault();
 
-app.listen(PORT, () => {
-  console.log("Server running on port " + PORT);
-});
+  const text = input.value.trim();
+  if (!text) return;
+
+  current.messages.push({ role: "user", text });
+  input.value = "";
+  renderChat();
+
+  typing.classList.remove("hidden");
+
+  const res = await fetch("/generate", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ prompt: text })
+  });
+
+  const data = await res.json();
+
+  typing.classList.add("hidden");
+
+  current.messages.push({ role: "ai", text: data.reply });
+  renderChat();
+};
+
+/* RENAME */
+renameBtn.onclick = () => {
+  const name = prompt("New name:");
+  if (!name) return;
+  current.name = name;
+  renderProjects();
+  renderChat();
+};
+
+/* DELETE */
+deleteBtn.onclick = () => {
+  if (projects.length <= 1) return alert("Need at least 1 project");
+
+  projects = projects.filter(p => p !== current);
+  current = projects[0];
+  renderProjects();
+  renderChat();
+};
+
+/* INIT */
+createProject();

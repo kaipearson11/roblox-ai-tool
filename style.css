@@ -1,0 +1,162 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0b0f1a;
+  color: white;
+}
+
+.app {
+  display: flex;
+  height: 100vh;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 260px;
+  background: #11172b;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  transition: 0.3s;
+}
+
+.sidebar.collapsed {
+  width: 70px;
+}
+
+.sidebar-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo {
+  width: 40px;
+  height: 40px;
+  background: #6c7cff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  font-weight: bold;
+}
+
+.title-group {
+  flex: 1;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+.new-project {
+  margin-top: 15px;
+  padding: 10px;
+  border: none;
+  background: #6c7cff;
+  color: white;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.projects {
+  margin-top: 20px;
+  overflow-y: auto;
+}
+
+.projects button {
+  width: 100%;
+  margin-bottom: 8px;
+  padding: 10px;
+  background: #1b2140;
+  border: none;
+  color: white;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.projects button.active {
+  background: #6c7cff;
+}
+
+/* OPEN BUTTON */
+.open-sidebar {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
+}
+
+/* MAIN */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* TOPBAR */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 20px;
+  border-bottom: 1px solid #222;
+}
+
+.header {
+  padding: 10px 20px;
+}
+
+/* CHAT */
+.chat {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.msg {
+  margin-bottom: 10px;
+}
+
+.user {
+  text-align: right;
+}
+
+.ai {
+  text-align: left;
+}
+
+/* INPUT */
+.input {
+  display: flex;
+  padding: 10px;
+  border-top: 1px solid #222;
+}
+
+textarea {
+  flex: 1;
+  resize: none;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+}
+
+button {
+  margin-left: 10px;
+  padding: 10px;
+  border: none;
+  background: #6c7cff;
+  color: white;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.hidden {
+  display: none;
+}
