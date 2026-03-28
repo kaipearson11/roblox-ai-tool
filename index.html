@@ -7,21 +7,21 @@
   <style>
     :root {
       --bg: #050816;
-      --bg-2: #0a1024;
-      --panel: rgba(11, 18, 40, 0.82);
+      --bg-2: #0b1127;
+      --panel: rgba(9, 15, 34, 0.86);
       --panel-2: rgba(255, 255, 255, 0.04);
       --panel-3: rgba(255, 255, 255, 0.07);
       --border: rgba(255, 255, 255, 0.08);
-      --text: #f5f7ff;
-      --muted: #9aa7c7;
-      --blue: #6990ff;
-      --blue-2: #7f5cff;
-      --cyan: #53d8ff;
-      --green: #38d39f;
-      --red: #ff5d7a;
+      --text: #f4f7ff;
+      --muted: #94a1c3;
+      --blue: #6d8fff;
+      --blue-2: #835dff;
+      --cyan: #56d8ff;
+      --green: #37d39f;
+      --red: #ff6480;
       --shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
       --radius-xl: 28px;
-      --radius-lg: 20px;
+      --radius-lg: 22px;
       --radius-md: 16px;
     }
 
@@ -38,9 +38,9 @@
       overflow: hidden;
       color: var(--text);
       background:
-        radial-gradient(circle at top left, rgba(105, 144, 255, 0.24), transparent 28%),
-        radial-gradient(circle at top right, rgba(127, 92, 255, 0.18), transparent 22%),
-        radial-gradient(circle at bottom center, rgba(56, 211, 159, 0.08), transparent 18%),
+        radial-gradient(circle at top left, rgba(109, 143, 255, 0.24), transparent 28%),
+        radial-gradient(circle at top right, rgba(131, 93, 255, 0.17), transparent 22%),
+        radial-gradient(circle at bottom center, rgba(55, 211, 159, 0.08), transparent 18%),
         linear-gradient(180deg, var(--bg-2), var(--bg));
     }
 
@@ -65,8 +65,8 @@
     }
 
     .sidebar {
-      width: 320px;
-      min-width: 320px;
+      width: 325px;
+      min-width: 325px;
       border-radius: var(--radius-xl);
       background: var(--panel);
       backdrop-filter: blur(20px);
@@ -75,8 +75,8 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      transition: width 0.22s ease, min-width 0.22s ease;
       position: relative;
+      transition: width 0.22s ease, min-width 0.22s ease;
     }
 
     .sidebar.collapsed {
@@ -92,7 +92,7 @@
       pointer-events: none;
       background:
         linear-gradient(180deg, rgba(255,255,255,0.05), transparent 22%),
-        radial-gradient(circle at top, rgba(105, 144, 255, 0.12), transparent 30%);
+        radial-gradient(circle at top, rgba(109, 143, 255, 0.11), transparent 30%);
     }
 
     .sidebar-top {
@@ -110,48 +110,59 @@
       align-items: center;
       gap: 12px;
       min-width: 0;
+      flex: 1;
     }
 
     .logo {
-      width: 50px;
-      height: 50px;
-      min-width: 50px;
+      width: 52px;
+      height: 52px;
+      min-width: 52px;
       border-radius: 18px;
       display: grid;
       place-items: center;
-      font-size: 24px;
-      font-weight: 800;
+      font-size: 25px;
+      font-weight: 900;
       background: linear-gradient(135deg, var(--blue), var(--blue-2));
-      box-shadow: 0 14px 30px rgba(105, 144, 255, 0.3);
+      box-shadow: 0 14px 30px rgba(109, 143, 255, 0.3);
     }
 
     .brand-text {
       min-width: 0;
+      flex: 1;
     }
 
     .brand {
-      font-size: 25px;
+      font-size: 24px;
       font-weight: 900;
       letter-spacing: -0.04em;
       line-height: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .subtext {
       color: var(--muted);
       font-size: 13px;
-      margin-top: 5px;
+      margin-top: 6px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
     .sidebar.collapsed .brand-text,
-    .sidebar.collapsed .section-title,
     .sidebar.collapsed .usage-card,
+    .sidebar.collapsed .section-title,
     .sidebar.collapsed .project-text,
     .sidebar.collapsed .promo-card,
     .sidebar.collapsed .footer-note {
       display: none;
+    }
+
+    .top-buttons {
+      display: flex;
+      gap: 10px;
+      flex-shrink: 0;
     }
 
     .icon-btn {
@@ -232,7 +243,7 @@
       flex: 1;
       min-height: 0;
       overflow-y: auto;
-      padding-right: 2px;
+      padding-right: 3px;
       margin-bottom: 14px;
     }
 
@@ -266,8 +277,8 @@
     }
 
     .project-item.active {
-      background: linear-gradient(180deg, rgba(105,144,255,0.17), rgba(127,92,255,0.11));
-      border-color: rgba(105, 144, 255, 0.22);
+      background: linear-gradient(180deg, rgba(109,143,255,0.17), rgba(131,93,255,0.11));
+      border-color: rgba(109, 143, 255, 0.22);
     }
 
     .project-icon {
@@ -303,7 +314,7 @@
 
     .promo-card {
       background:
-        radial-gradient(circle at top right, rgba(127,92,255,0.18), transparent 35%),
+        radial-gradient(circle at top right, rgba(131,93,255,0.18), transparent 35%),
         linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
       border: 1px solid var(--border);
       border-radius: 20px;
@@ -319,8 +330,8 @@
       font-weight: 800;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      background: rgba(127,92,255,0.2);
-      border: 1px solid rgba(127,92,255,0.25);
+      background: rgba(131,93,255,0.2);
+      border: 1px solid rgba(131,93,255,0.25);
       margin-bottom: 12px;
     }
 
@@ -328,6 +339,7 @@
       font-size: 18px;
       font-weight: 900;
       margin-bottom: 6px;
+      line-height: 1.15;
     }
 
     .promo-text {
@@ -390,6 +402,7 @@
 
     .topbar-left {
       min-width: 0;
+      flex: 1;
     }
 
     .eyebrow {
@@ -409,7 +422,7 @@
       height: 8px;
       border-radius: 50%;
       background: var(--green);
-      box-shadow: 0 0 16px rgba(56, 211, 159, 0.45);
+      box-shadow: 0 0 16px rgba(55, 211, 159, 0.45);
     }
 
     .project-title {
@@ -468,7 +481,7 @@
     }
 
     .delete-btn {
-      background: linear-gradient(135deg, rgba(255,93,122,0.22), rgba(255,93,122,0.1));
+      background: linear-gradient(135deg, rgba(255,100,128,0.22), rgba(255,100,128,0.1));
     }
 
     .stats {
@@ -486,6 +499,7 @@
       border: 1px solid rgba(255,255,255,0.06);
       border-radius: 18px;
       padding: 16px;
+      min-height: 140px;
     }
 
     .stat-label {
@@ -501,12 +515,13 @@
       font-size: 24px;
       font-weight: 900;
       letter-spacing: -0.03em;
+      line-height: 1.1;
     }
 
     .stat-sub {
       color: var(--muted);
       font-size: 13px;
-      margin-top: 6px;
+      margin-top: 8px;
       line-height: 1.45;
     }
 
@@ -737,7 +752,7 @@
       font-weight: 900;
       color: white;
       background: linear-gradient(135deg, var(--blue), var(--blue-2));
-      box-shadow: 0 14px 28px rgba(105, 144, 255, 0.28);
+      box-shadow: 0 14px 28px rgba(109, 143, 255, 0.28);
       cursor: pointer;
       transition: 0.18s ease;
     }
@@ -757,7 +772,7 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    @media (max-width: 1100px) {
+    @media (max-width: 1150px) {
       .stats {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
@@ -855,13 +870,14 @@
       <div class="sidebar-top">
         <div class="brand-group">
           <div class="logo">G</div>
+
           <div class="brand-text">
             <div class="brand">GameDev AI</div>
             <div class="subtext">Build smarter. Ship faster.</div>
           </div>
         </div>
 
-        <div style="display:flex; gap:10px;">
+        <div class="top-buttons">
           <button class="icon-btn" id="newProjectBtn" title="New Project">＋</button>
           <button class="icon-btn" id="toggleSidebar" title="Toggle Sidebar">☰</button>
         </div>
@@ -918,16 +934,19 @@
           <div class="stat-value">Lua + Design</div>
           <div class="stat-sub">Scripts, gameplay loops, economies, UI, and progression systems.</div>
         </div>
+
         <div class="stat-card">
           <div class="stat-label">Response Style</div>
           <div class="stat-value">Fast + Clear</div>
           <div class="stat-sub">Practical answers you can actually use right away.</div>
         </div>
+
         <div class="stat-card">
           <div class="stat-label">Current Mode</div>
           <div class="stat-value">Builder</div>
           <div class="stat-sub">Turn rough ideas into real systems and features.</div>
         </div>
+
         <div class="stat-card">
           <div class="stat-label">Focus</div>
           <div class="stat-value">Game Systems</div>
