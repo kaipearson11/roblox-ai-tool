@@ -18,10 +18,6 @@ const openai = new OpenAI({
 app.use(express.json());
 app.use(express.static(__dirname));
 
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
-});
-
 app.post("/chat", async (req, res) => {
   try {
     const { message, history } = req.body;
@@ -39,7 +35,14 @@ app.post("/chat", async (req, res) => {
           "You are GameDev AI, a helpful assistant for game development. You help with Lua scripting, mechanics, balancing, UI, progression systems, monetization ideas, debugging, and creative brainstorming. Be clear, practical, and helpful."
       },
       ...safeHistory.map((msg) => ({
-        role: msg.role === "assistant" ? "assistant" : msg.role === "system" ? "system" : msg.role === "ai" ? "assistant" : "user",
+        role:
+          msg.role === "assistant"
+            ? "assistant"
+            : msg.role === "system"
+            ? "system"
+            : msg.role === "ai"
+            ? "assistant"
+            : "user",
         content: String(msg.content || "")
       })),
       {
@@ -61,11 +64,15 @@ app.post("/chat", async (req, res) => {
     res.json({ reply });
   } catch (error) {
     console.error("Chat error:", error);
-
     res.status(500).json({
       reply: "There was a server error while generating a response."
     });
   }
+});
+
+// IMPORTANT: this makes any page load return index.html
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "index.html"));
 });
 
 app.listen(PORT, () => {
