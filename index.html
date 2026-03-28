@@ -2,108 +2,68 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>GameDev AI</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="app-shell">
-    <button id="expandSidebarBtn" class="expand-sidebar-btn hidden" title="Open sidebar">☰</button>
 
-    <aside id="sidebar" class="sidebar">
-      <div class="sidebar-header">
-        <div class="brand-row">
-          <div class="brand-icon">G</div>
+<div class="app">
 
-          <div class="brand-text">
-            <h1>GameDev AI</h1>
-            <p>Scripts, ideas, systems</p>
-          </div>
+  <!-- SIDEBAR -->
+  <div id="sidebar" class="sidebar">
 
-          <button id="collapseSidebarBtn" class="sidebar-toggle-btn" title="Minimize sidebar">☰</button>
-        </div>
+    <div class="top">
+      <div class="logo">G</div>
 
-        <button id="newProjectBtn" class="new-project-btn">+ New Project</button>
+      <!-- THIS BUTTON STAYS VISIBLE EVEN WHEN COLLAPSED -->
+      <button id="toggleSidebar" class="toggle">☰</button>
+    </div>
+
+    <div class="sidebar-content">
+      <h2>GameDev AI</h2>
+      <p>Scripts, ideas, systems</p>
+
+      <button id="newProject">+ New Project</button>
+
+      <div class="projects">
+        <h4>Projects</h4>
+        <div id="projectList"></div>
       </div>
+    </div>
 
-      <div class="sidebar-section">
-        <div class="sidebar-label">Projects</div>
-        <div id="projectList" class="project-list"></div>
-      </div>
-
-      <div class="sidebar-footer">
-        <div class="pro-card">
-          <div class="pro-badge">Future Pro</div>
-          <h3>Upgrade later</h3>
-          <p>Saved prompts, better tools, exports, and premium features.</p>
-          <button class="pro-btn" disabled>Coming Soon</button>
-        </div>
-      </div>
-    </aside>
-
-    <main class="main-panel">
-      <div class="topbar">
-        <div class="topbar-left">
-          <span class="live-pill">● Live Workspace</span>
-        </div>
-
-        <div class="topbar-right">
-          <span class="status-pill">AI Ready</span>
-          <button id="renameProjectBtn" class="top-btn primary-btn">Rename</button>
-          <button id="deleteProjectBtn" class="top-btn danger-btn">Delete</button>
-        </div>
-      </div>
-
-      <section class="project-hero">
-        <h2 id="projectTitle">New Project</h2>
-        <p id="projectSubtitle">Start chatting to build your next Roblox idea.</p>
-      </section>
-
-      <section id="chatMessages" class="chat-messages">
-        <div class="message-row ai-row">
-          <div class="avatar ai-avatar">AI</div>
-          <div class="message-bubble ai-bubble">
-            Tell me what you want to build and I’ll help with scripts, ideas, mechanics, UI, balancing, bugs, and progression.
-          </div>
-        </div>
-      </section>
-
-      <div id="typingIndicator" class="typing-indicator hidden">
-        <div class="message-row ai-row">
-          <div class="avatar ai-avatar">AI</div>
-          <div class="message-bubble ai-bubble typing-bubble">
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
-        </div>
-      </div>
-
-      <section class="composer-section">
-        <div class="quick-actions">
-          <button class="quick-action-btn" data-fill="Give me a Roblox game idea">Game idea</button>
-          <button class="quick-action-btn" data-fill="Make me a collectible script">Collectible script</button>
-          <button class="quick-action-btn" data-fill="How can I monetize this game?">Monetization</button>
-          <button class="quick-action-btn" data-fill="Make me a fun game loop">Game loop</button>
-          <button class="quick-action-btn" data-fill="Make me an inventory system">Inventory system</button>
-        </div>
-
-        <form id="chatForm" class="chat-form">
-          <textarea
-            id="promptInput"
-            placeholder="Ask for scripts, mechanics, game ideas, UI help, balancing, bugs, progression systems, and more..."
-            rows="1"
-          ></textarea>
-
-          <div class="chat-form-actions">
-            <button type="button" id="clearBtn" class="secondary-btn">Clear</button>
-            <button type="submit" class="send-btn">Send Message</button>
-          </div>
-        </form>
-      </section>
-    </main>
   </div>
 
-  <script src="script.js"></script>
+  <!-- MAIN -->
+  <div class="main">
+
+    <div class="header">
+      <div>● Live Workspace</div>
+
+      <div class="actions">
+        <button id="renameBtn">Rename</button>
+        <button id="deleteBtn">Delete</button>
+      </div>
+    </div>
+
+    <div class="title">
+      <h1 id="projectTitle">New Project</h1>
+      <p>Start chatting to build your next Roblox idea.</p>
+    </div>
+
+    <div id="chat" class="chat"></div>
+
+    <div id="typing" class="typing hidden">AI is typing...</div>
+
+    <form id="form" class="input-area">
+      <textarea id="input" placeholder="Ask anything..."></textarea>
+      <button type="submit">Send</button>
+    </form>
+
+  </div>
+
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>
