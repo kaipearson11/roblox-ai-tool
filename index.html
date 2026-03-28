@@ -5,188 +5,562 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GameDev AI</title>
   <style>
+    :root {
+      --bg-1: #030712;
+      --bg-2: #0b1220;
+      --panel: rgba(10, 16, 30, 0.78);
+      --panel-2: rgba(255, 255, 255, 0.05);
+      --panel-3: rgba(255, 255, 255, 0.08);
+      --border: rgba(255, 255, 255, 0.08);
+      --text: #f8fafc;
+      --muted: #93a0bd;
+      --blue: #5b8cff;
+      --blue-2: #7c5cff;
+      --green: #35d399;
+      --red: #ff5c7a;
+      --shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+      --radius-xl: 26px;
+      --radius-lg: 20px;
+      --radius-md: 16px;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: Arial, sans-serif;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
-    body {
-      background: #050816;
-      color: white;
-      height: 100vh;
+    html, body {
+      width: 100%;
+      height: 100%;
       overflow: hidden;
+      background:
+        radial-gradient(circle at top left, rgba(91, 140, 255, 0.28), transparent 28%),
+        radial-gradient(circle at top right, rgba(124, 92, 255, 0.22), transparent 22%),
+        radial-gradient(circle at bottom center, rgba(53, 211, 153, 0.12), transparent 20%),
+        linear-gradient(180deg, var(--bg-2), var(--bg-1));
+      color: var(--text);
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 28px 28px;
+      mask-image: radial-gradient(circle at center, black 40%, transparent 90%);
+      opacity: 0.8;
     }
 
     .app {
       display: flex;
-      height: 100vh;
       width: 100vw;
+      height: 100vh;
+      padding: 16px;
+      gap: 16px;
     }
 
     .sidebar {
-      width: 290px;
-      background: #07103a;
-      border-right: 1px solid rgba(255,255,255,0.08);
+      width: 310px;
+      min-width: 310px;
+      background: var(--panel);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      border-radius: var(--radius-xl);
       display: flex;
       flex-direction: column;
-      transition: width 0.25s ease;
       overflow: hidden;
+      transition: width 0.25s ease, min-width 0.25s ease;
+      position: relative;
     }
 
     .sidebar.collapsed {
-      width: 86px;
+      width: 92px;
+      min-width: 92px;
+    }
+
+    .sidebar::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.05), transparent 25%),
+        radial-gradient(circle at top, rgba(91,140,255,0.14), transparent 28%);
+      pointer-events: none;
     }
 
     .sidebar-top {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      padding: 16px 12px;
-    }
-
-    .icon-btn {
-      width: 48px;
-      height: 48px;
-      border: none;
-      border-radius: 14px;
-      background: rgba(255,255,255,0.08);
-      color: white;
-      font-size: 28px;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-
-    .icon-btn:hover {
-      background: rgba(255,255,255,0.14);
-    }
-
-    .sidebar-title {
-      padding: 0 16px 12px 16px;
-    }
-
-    .sidebar.collapsed .sidebar-title,
-    .sidebar.collapsed .project-name-text,
-    .sidebar.collapsed .sidebar-footer-text {
-      display: none;
-    }
-
-    .brand {
-      font-size: 24px;
-      font-weight: 700;
-      margin-bottom: 6px;
-    }
-
-    .subtext {
-      color: #aeb8d6;
-      font-size: 14px;
-      line-height: 1.4;
-    }
-
-    .projects {
-      flex: 1;
-      padding: 0 10px 10px 10px;
-      overflow-y: auto;
-    }
-
-    .project-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 14px 12px;
-      border-radius: 14px;
-      cursor: pointer;
-      color: white;
-      margin-bottom: 8px;
-      transition: 0.2s;
-      background: transparent;
-      border: 1px solid transparent;
-    }
-
-    .project-item:hover {
-      background: rgba(255,255,255,0.06);
-    }
-
-    .project-item.active {
-      background: rgba(85, 125, 255, 0.22);
-      border-color: rgba(110, 145, 255, 0.3);
-    }
-
-    .project-icon {
-      font-size: 20px;
-      min-width: 24px;
-      text-align: center;
-    }
-
-    .sidebar-footer {
-      padding: 14px 16px;
-      border-top: 1px solid rgba(255,255,255,0.08);
-      color: #9aa8d4;
-      font-size: 12px;
-      line-height: 1.5;
-    }
-
-    .main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      background: linear-gradient(180deg, #04114c 0%, #02081d 100%);
-    }
-
-    .topbar {
-      padding: 18px 22px;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
+      position: relative;
+      z-index: 1;
+      padding: 18px 16px 10px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
+      gap: 10px;
     }
 
-    .project-title {
-      font-size: 34px;
-      font-weight: 700;
+    .sidebar-top-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo {
+      width: 48px;
+      height: 48px;
+      min-width: 48px;
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      background:
+        linear-gradient(135deg, rgba(91,140,255,0.95), rgba(124,92,255,0.95));
+      box-shadow: 0 14px 30px rgba(91, 140, 255, 0.35);
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
+
+    .brand-wrap {
+      min-width: 0;
+    }
+
+    .brand {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .subtext {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 4px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
+    .sidebar.collapsed .brand-wrap,
+    .sidebar.collapsed .section-title,
+    .sidebar.collapsed .project-name-text,
+    .sidebar.collapsed .project-meta,
+    .sidebar.collapsed .sidebar-footer-text,
+    .sidebar.collapsed .pro-card,
+    .sidebar.collapsed .usage-card {
+      display: none;
+    }
+
+    .icon-btn {
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.05);
+      color: white;
+      width: 46px;
+      height: 46px;
+      min-width: 46px;
+      border-radius: 16px;
+      font-size: 20px;
+      cursor: pointer;
+      transition: 0.2s ease;
+      backdrop-filter: blur(12px);
+    }
+
+    .icon-btn:hover {
+      transform: translateY(-1px);
+      background: rgba(255,255,255,0.1);
+      border-color: rgba(255,255,255,0.14);
+    }
+
+    .sidebar-content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
+      padding: 0 14px 14px;
+    }
+
+    .usage-card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 14px;
+      margin-top: 8px;
+      margin-bottom: 14px;
+    }
+
+    .usage-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      gap: 8px;
+    }
+
+    .usage-label {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .usage-value {
+      font-size: 13px;
+      font-weight: 700;
+      color: white;
+    }
+
+    .usage-bar {
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.07);
+      overflow: hidden;
+    }
+
+    .usage-fill {
+      width: 68%;
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--blue), var(--blue-2));
+    }
+
+    .section-title {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #8593b4;
+      margin-bottom: 10px;
+      padding: 0 6px;
+    }
+
+    .projects {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding-right: 2px;
+      margin-bottom: 14px;
+    }
+
+    .projects::-webkit-scrollbar,
+    .chat::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    .projects::-webkit-scrollbar-thumb,
+    .chat::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.12);
+      border-radius: 999px;
+      border: 2px solid transparent;
+      background-clip: padding-box;
+    }
+
+    .project-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 12px;
+      margin-bottom: 8px;
+      border-radius: 18px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      background: transparent;
+      transition: 0.22s ease;
+    }
+
+    .project-item:hover {
+      background: rgba(255,255,255,0.05);
+      border-color: rgba(255,255,255,0.06);
+      transform: translateY(-1px);
+    }
+
+    .project-item.active {
+      background: linear-gradient(180deg, rgba(91,140,255,0.18), rgba(124,92,255,0.13));
+      border-color: rgba(111, 143, 255, 0.28);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+    }
+
+    .project-icon {
+      width: 42px;
+      height: 42px;
+      min-width: 42px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      font-size: 18px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.07);
+    }
+
+    .project-text {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .project-name-text {
+      font-size: 15px;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: #f5f8ff;
+    }
+
+    .project-meta {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .pro-card {
+      background:
+        radial-gradient(circle at top right, rgba(124,92,255,0.22), transparent 38%),
+        linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.03));
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 16px;
+      margin-bottom: 14px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .pro-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: white;
+      background: rgba(124,92,255,0.22);
+      border: 1px solid rgba(124,92,255,0.28);
+      padding: 7px 10px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+    }
+
+    .pro-title {
+      font-size: 17px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .pro-text {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+      margin-bottom: 14px;
+    }
+
+    .pro-btn {
+      width: 100%;
+      border: none;
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-size: 14px;
+      font-weight: 800;
+      color: white;
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--blue), var(--blue-2));
+      box-shadow: 0 12px 26px rgba(91, 140, 255, 0.22);
+      transition: 0.2s ease;
+    }
+
+    .pro-btn:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.07);
+    }
+
+    .sidebar-footer {
+      padding: 0 2px 0;
+    }
+
+    .sidebar-footer-text {
+      color: #8390ae;
+      font-size: 11px;
+      line-height: 1.5;
+      padding: 0 6px;
+    }
+
+    .main {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      background: var(--panel);
+      backdrop-filter: blur(18px);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .main::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at top right, rgba(91,140,255,0.12), transparent 18%),
+        linear-gradient(180deg, rgba(255,255,255,0.05), transparent 22%);
+    }
+
+    .topbar {
+      position: relative;
+      z-index: 1;
+      padding: 20px 22px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      background: rgba(255,255,255,0.02);
+    }
+
+    .topbar-left {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 18px rgba(53, 211, 153, 0.5);
+    }
+
+    .project-title {
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -0.04em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .project-subtitle {
+      font-size: 14px;
+      color: var(--muted);
+    }
+
     .topbar-actions {
       display: flex;
-      gap: 12px;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      padding: 10px 14px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #dbe5ff;
+      font-size: 13px;
+      font-weight: 700;
     }
 
     .action-btn {
-      border: none;
-      border-radius: 14px;
-      padding: 12px 18px;
-      font-size: 16px;
-      font-weight: 600;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 12px 16px;
+      font-size: 14px;
+      font-weight: 800;
       color: white;
       cursor: pointer;
-      transition: 0.2s;
+      transition: 0.2s ease;
+      background: rgba(255,255,255,0.05);
+    }
+
+    .action-btn:hover {
+      transform: translateY(-1px);
+      background: rgba(255,255,255,0.09);
     }
 
     .rename-btn {
-      background: #3f76ff;
-    }
-
-    .rename-btn:hover {
-      background: #5a89ff;
+      background: linear-gradient(135deg, rgba(91,140,255,0.95), rgba(91,140,255,0.78));
+      border-color: rgba(111,143,255,0.28);
     }
 
     .delete-btn {
-      background: #ff4b5c;
+      background: linear-gradient(135deg, rgba(255,92,122,0.24), rgba(255,92,122,0.14));
+      border-color: rgba(255,92,122,0.22);
     }
 
-    .delete-btn:hover {
-      background: #ff6272;
+    .hero {
+      position: relative;
+      z-index: 1;
+      padding: 18px 22px 10px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+    }
+
+    .hero-card {
+      flex: 1;
+      min-width: 180px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    .hero-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .hero-value {
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+    }
+
+    .hero-sub {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 13px;
     }
 
     .chat {
+      position: relative;
+      z-index: 1;
       flex: 1;
+      min-height: 0;
       overflow-y: auto;
-      padding: 24px;
+      padding: 24px 22px;
       display: flex;
       flex-direction: column;
       gap: 18px;
@@ -195,6 +569,7 @@
     .message-row {
       display: flex;
       width: 100%;
+      animation: fadeUp 0.25s ease;
     }
 
     .message-row.user {
@@ -205,127 +580,340 @@
       justify-content: flex-start;
     }
 
-    .bubble {
-      max-width: 720px;
-      padding: 18px 22px;
-      border-radius: 22px;
-      line-height: 1.55;
-      font-size: 16px;
-      white-space: pre-wrap;
-      word-wrap: break-word;
+    .message-shell {
+      max-width: min(860px, 88%);
+      display: flex;
+      gap: 12px;
+      align-items: flex-end;
     }
 
-    .bubble.user {
-      background: #3f76ff;
-      color: white;
-      border-bottom-right-radius: 8px;
+    .message-row.user .message-shell {
+      flex-direction: row-reverse;
+    }
+
+    .avatar {
+      width: 42px;
+      height: 42px;
+      min-width: 42px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      font-size: 18px;
+      font-weight: 800;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.05);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.22);
+    }
+
+    .avatar.ai {
+      background: linear-gradient(135deg, rgba(91,140,255,0.95), rgba(124,92,255,0.9));
+    }
+
+    .avatar.user {
+      background: linear-gradient(135deg, rgba(53,211,153,0.92), rgba(41,182,246,0.85));
+    }
+
+    .message-card {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .message-meta {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 700;
+      padding: 0 4px;
+    }
+
+    .bubble {
+      position: relative;
+      padding: 18px 20px;
+      border-radius: 22px;
+      font-size: 16px;
+      line-height: 1.65;
+      white-space: pre-wrap;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 14px 28px rgba(0,0,0,0.18);
     }
 
     .bubble.ai {
-      background: rgba(255,255,255,0.10);
-      color: white;
-      border-bottom-left-radius: 8px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.075), rgba(255,255,255,0.045));
+      border-top-left-radius: 8px;
+    }
+
+    .bubble.user {
+      background: linear-gradient(135deg, rgba(91,140,255,1), rgba(124,92,255,0.96));
+      border-top-right-radius: 8px;
+    }
+
+    .bubble code {
+      background: rgba(0,0,0,0.22);
+      padding: 2px 6px;
+      border-radius: 8px;
+      font-size: 0.95em;
     }
 
     .typing {
       display: inline-flex;
-      gap: 6px;
       align-items: center;
-      height: 16px;
+      gap: 6px;
+      height: 18px;
     }
 
     .typing span {
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background: #cfd8ff;
-      animation: bounce 1.1s infinite;
+      background: #dce5ff;
+      animation: pulse 1s infinite ease-in-out;
     }
 
-    .typing span:nth-child(2) {
-      animation-delay: 0.15s;
+    .typing span:nth-child(2) { animation-delay: 0.14s; }
+    .typing span:nth-child(3) { animation-delay: 0.28s; }
+
+    @keyframes pulse {
+      0%, 100% { transform: translateY(0); opacity: 0.45; }
+      50% { transform: translateY(-4px); opacity: 1; }
     }
 
-    .typing span:nth-child(3) {
-      animation-delay: 0.3s;
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
-    @keyframes bounce {
-      0%, 80%, 100% { transform: scale(0.7); opacity: 0.5; }
-      40% { transform: scale(1); opacity: 1; }
+    .quick-prompts {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      padding: 0 22px 16px;
+    }
+
+    .quick-btn {
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+      color: #e8eeff;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 10px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .quick-btn:hover {
+      background: rgba(255,255,255,0.09);
+      transform: translateY(-1px);
     }
 
     .input-wrap {
-      padding: 16px;
+      position: relative;
+      z-index: 1;
+      padding: 18px 22px 22px;
       border-top: 1px solid rgba(255,255,255,0.08);
-      background: rgba(0,0,0,0.12);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.03));
+    }
+
+    .composer {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 24px;
+      padding: 12px;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.18);
     }
 
     .input-bar {
       display: flex;
       gap: 12px;
-      align-items: stretch;
+      align-items: flex-end;
+    }
+
+    .textarea-wrap {
+      flex: 1;
+      min-width: 0;
+      position: relative;
     }
 
     textarea {
-      flex: 1;
-      min-height: 64px;
-      max-height: 180px;
-      resize: vertical;
+      width: 100%;
+      resize: none;
+      min-height: 72px;
+      max-height: 220px;
       border: none;
       outline: none;
-      border-radius: 18px;
-      padding: 18px;
-      font-size: 18px;
-      background: rgba(255,255,255,0.06);
+      background: transparent;
       color: white;
+      font-size: 17px;
+      line-height: 1.5;
+      padding: 12px 14px;
     }
 
     textarea::placeholder {
-      color: #8f98b8;
+      color: #8492b0;
+    }
+
+    .composer-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 4px 6px 2px;
+      flex-wrap: wrap;
+    }
+
+    .composer-hint {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .composer-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .ghost-btn {
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+      color: white;
+      border-radius: 14px;
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
     }
 
     .send-btn {
       border: none;
-      border-radius: 18px;
-      padding: 0 24px;
-      font-size: 20px;
-      font-weight: 700;
-      background: #3f76ff;
+      border-radius: 16px;
+      padding: 13px 18px;
+      min-width: 120px;
+      font-size: 15px;
+      font-weight: 900;
+      letter-spacing: 0.01em;
       color: white;
+      background: linear-gradient(135deg, var(--blue), var(--blue-2));
+      box-shadow: 0 14px 28px rgba(91, 140, 255, 0.32);
       cursor: pointer;
-      min-width: 110px;
+      transition: 0.2s ease;
     }
 
     .send-btn:hover {
-      background: #5a89ff;
+      transform: translateY(-1px);
+      filter: brightness(1.06);
     }
 
-    @media (max-width: 800px) {
-      .sidebar {
-        width: 86px;
+    .send-btn:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    @media (max-width: 1000px) {
+      .app {
+        padding: 10px;
+        gap: 10px;
       }
 
-      .sidebar-title,
+      .sidebar {
+        width: 92px;
+        min-width: 92px;
+      }
+
+      .brand-wrap,
+      .section-title,
       .project-name-text,
-      .sidebar-footer-text {
+      .project-meta,
+      .sidebar-footer-text,
+      .pro-card,
+      .usage-card {
         display: none;
       }
 
-      .project-title {
-        font-size: 24px;
+      .topbar {
+        padding: 16px;
       }
 
-      .topbar {
-        padding: 14px;
+      .hero {
+        padding: 12px 16px 8px;
       }
 
       .chat {
-        padding: 14px;
+        padding: 18px 16px;
       }
 
-      .bubble {
-        max-width: 92%;
+      .quick-prompts {
+        padding: 0 16px 14px;
+      }
+
+      .input-wrap {
+        padding: 16px;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .app {
+        flex-direction: column;
+      }
+
+      .sidebar,
+      .sidebar.collapsed {
+        width: 100%;
+        min-width: 100%;
+        max-height: 92px;
+      }
+
+      .sidebar-content {
+        display: none;
+      }
+
+      .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .topbar-actions {
+        width: 100%;
+        justify-content: flex-start;
+      }
+
+      .message-shell {
+        max-width: 100%;
+      }
+
+      .quick-prompts {
+        gap: 8px;
+      }
+
+      .quick-btn {
+        width: 100%;
+        text-align: left;
+      }
+
+      .composer-bottom {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .composer-actions {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .send-btn {
+        min-width: 0;
       }
     }
   </style>
@@ -334,39 +922,108 @@
   <div class="app">
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-top">
-        <button class="icon-btn" id="toggleSidebar">☰</button>
-        <button class="icon-btn" id="newProjectBtn">＋</button>
+        <div class="sidebar-top-left">
+          <div class="logo">G</div>
+          <div class="brand-wrap">
+            <div class="brand">GameDev AI</div>
+            <div class="subtext">Build smarter. Ship faster.</div>
+          </div>
+        </div>
+        <div style="display:flex; gap:10px;">
+          <button class="icon-btn" id="newProjectBtn" title="New Project">＋</button>
+          <button class="icon-btn" id="toggleSidebar" title="Toggle Sidebar">☰</button>
+        </div>
       </div>
 
-      <div class="sidebar-title">
-        <div class="brand">GameDev AI</div>
-        <div class="subtext">Ideas, scripts, and help for game development.</div>
-      </div>
+      <div class="sidebar-content">
+        <div class="usage-card">
+          <div class="usage-top">
+            <div class="usage-label">Creative Power</div>
+            <div class="usage-value">68%</div>
+          </div>
+          <div class="usage-bar">
+            <div class="usage-fill"></div>
+          </div>
+        </div>
 
-      <div class="projects" id="projectsList"></div>
+        <div class="section-title">Projects</div>
+        <div class="projects" id="projectsList"></div>
 
-      <div class="sidebar-footer">
-        <div class="sidebar-footer-text">
-          GameDev AI is an independent tool and is not affiliated with any game platform.
+        <div class="pro-card">
+          <div class="pro-badge">⚡ Future Pro</div>
+          <div class="pro-title">Level up your workflow</div>
+          <div class="pro-text">Save better prompts, unlock advanced tools, and turn your app into a real product.</div>
+          <button class="pro-btn" type="button">Coming Soon</button>
+        </div>
+
+        <div class="sidebar-footer">
+          <div class="sidebar-footer-text">
+            GameDev AI is an independent tool and is not affiliated with any game platform.
+          </div>
         </div>
       </div>
     </aside>
 
     <main class="main">
       <div class="topbar">
-        <div class="project-title" id="projectTitle">New Project</div>
+        <div class="topbar-left">
+          <div class="eyebrow">
+            <span class="eyebrow-dot"></span>
+            Live Workspace
+          </div>
+          <div class="project-title" id="projectTitle">New Project</div>
+          <div class="project-subtitle">Ideas, systems, scripts, balancing, and debugging in one place.</div>
+        </div>
+
         <div class="topbar-actions">
+          <div class="pill">🧠 AI Ready</div>
           <button class="action-btn rename-btn" id="renameBtn">Rename</button>
           <button class="action-btn delete-btn" id="deleteBtn">Delete</button>
         </div>
       </div>
 
+      <div class="hero">
+        <div class="hero-card">
+          <div class="hero-label">Best For</div>
+          <div class="hero-value">Lua + Design</div>
+          <div class="hero-sub">Scripts, gameplay loops, economies, UI, progression.</div>
+        </div>
+        <div class="hero-card">
+          <div class="hero-label">Response Style</div>
+          <div class="hero-value">Fast + Clear</div>
+          <div class="hero-sub">Straight answers that are easy to use in projects.</div>
+        </div>
+        <div class="hero-card">
+          <div class="hero-label">Current Mode</div>
+          <div class="hero-value">Builder</div>
+          <div class="hero-sub">Turn ideas into real game systems and features.</div>
+        </div>
+      </div>
+
       <div class="chat" id="chat"></div>
 
+      <div class="quick-prompts">
+        <button class="quick-btn" data-prompt="Make me a fun progression-based game idea I can actually build.">Game idea</button>
+        <button class="quick-btn" data-prompt="Write a clean Lua script for a collectible system.">Collectible script</button>
+        <button class="quick-btn" data-prompt="Help me make a monetization system that feels fair.">Monetization</button>
+        <button class="quick-btn" data-prompt="Give me a game loop that keeps players coming back.">Game loop</button>
+      </div>
+
       <div class="input-wrap">
-        <div class="input-bar">
-          <textarea id="messageInput" placeholder="Ask about scripts, ideas, mechanics, systems, balancing, UI, and more..."></textarea>
-          <button class="send-btn" id="sendBtn">Send</button>
+        <div class="composer">
+          <div class="input-bar">
+            <div class="textarea-wrap">
+              <textarea id="messageInput" placeholder="Ask for scripts, mechanics, game ideas, UI help, balancing, bugs, progression systems, and more..."></textarea>
+            </div>
+          </div>
+
+          <div class="composer-bottom">
+            <div class="composer-hint">Enter to send • Shift + Enter for a new line</div>
+            <div class="composer-actions">
+              <button class="ghost-btn" id="clearInputBtn" type="button">Clear</button>
+              <button class="send-btn" id="sendBtn" type="button">Send Message</button>
+            </div>
+          </div>
         </div>
       </div>
     </main>
@@ -383,9 +1040,12 @@
     const newProjectBtn = document.getElementById("newProjectBtn");
     const toggleSidebar = document.getElementById("toggleSidebar");
     const sidebar = document.getElementById("sidebar");
+    const clearInputBtn = document.getElementById("clearInputBtn");
+    const quickButtons = document.querySelectorAll(".quick-btn");
 
     let projects = [];
     let currentProjectId = null;
+    let isSending = false;
 
     function saveProjects() {
       localStorage.setItem("gamedev_ai_projects", JSON.stringify(projects));
@@ -397,21 +1057,27 @@
       const savedCurrent = localStorage.getItem("gamedev_ai_current_project");
 
       if (savedProjects) {
-        projects = JSON.parse(savedProjects);
+        try {
+          projects = JSON.parse(savedProjects);
+        } catch (error) {
+          projects = [];
+        }
       }
 
-      if (projects.length === 0) {
-        createProject();
+      if (!Array.isArray(projects) || projects.length === 0) {
+        createProject("My First Project");
         return;
       }
 
       currentProjectId = savedCurrent || projects[0].id;
-      if (!projects.find(p => p.id === currentProjectId)) {
+
+      if (!projects.find((p) => p.id === currentProjectId)) {
         currentProjectId = projects[0].id;
       }
 
       renderProjects();
       renderCurrentProject();
+      autoResizeTextarea();
     }
 
     function createProject(name = "New Project") {
@@ -422,7 +1088,8 @@
         messages: [
           {
             role: "ai",
-            content: "Hello! How can I assist you today with game development, Lua scripts, ideas, mechanics, UI, or systems?"
+            content:
+              "Welcome to GameDev AI.\n\nTell me what you want to build and I’ll help with ideas, scripts, systems, balancing, UI, debugging, and progression."
           }
         ]
       };
@@ -432,28 +1099,34 @@
       saveProjects();
       renderProjects();
       renderCurrentProject();
+      autoResizeTextarea();
     }
 
     function getCurrentProject() {
-      return projects.find(p => p.id === currentProjectId);
+      return projects.find((p) => p.id === currentProjectId);
     }
 
     function renderProjects() {
       projectsList.innerHTML = "";
 
-      projects.forEach(project => {
+      projects.forEach((project, index) => {
         const item = document.createElement("div");
         item.className = "project-item" + (project.id === currentProjectId ? " active" : "");
         item.innerHTML = `
-          <div class="project-icon">📁</div>
-          <div class="project-name-text">${escapeHtml(project.name)}</div>
+          <div class="project-icon">${index % 3 === 0 ? "🎮" : index % 3 === 1 ? "⚙️" : "💡"}</div>
+          <div class="project-text">
+            <div class="project-name-text">${escapeHtml(project.name)}</div>
+            <div class="project-meta">${project.messages.length} message${project.messages.length === 1 ? "" : "s"}</div>
+          </div>
         `;
-        item.onclick = () => {
+
+        item.addEventListener("click", () => {
           currentProjectId = project.id;
           saveProjects();
           renderProjects();
           renderCurrentProject();
-        };
+        });
+
         projectsList.appendChild(item);
       });
     }
@@ -465,51 +1138,90 @@
       projectTitle.textContent = project.name;
       chat.innerHTML = "";
 
-      project.messages.forEach(msg => {
+      project.messages.forEach((msg) => {
         addMessageToChat(msg.role, msg.content, false);
       });
 
+      scrollChatToBottom();
+    }
+
+    function scrollChatToBottom() {
       chat.scrollTop = chat.scrollHeight;
+    }
+
+    function createAvatar(role) {
+      const avatar = document.createElement("div");
+      avatar.className = `avatar ${role === "user" ? "user" : "ai"}`;
+      avatar.textContent = role === "user" ? "U" : "AI";
+      return avatar;
+    }
+
+    function createMeta(role) {
+      const meta = document.createElement("div");
+      meta.className = "message-meta";
+      meta.textContent = role === "user" ? "You" : "GameDev AI";
+      return meta;
     }
 
     function addMessageToChat(role, content, shouldScroll = true, isTyping = false) {
       const row = document.createElement("div");
       row.className = `message-row ${role}`;
 
+      const shell = document.createElement("div");
+      shell.className = "message-shell";
+
+      const avatar = createAvatar(role);
+      const card = document.createElement("div");
+      card.className = "message-card";
+
+      const meta = createMeta(role);
       const bubble = document.createElement("div");
       bubble.className = `bubble ${role}`;
 
       if (isTyping) {
         bubble.innerHTML = `
           <div class="typing">
-            <span></span><span></span><span></span>
+            <span></span>
+            <span></span>
+            <span></span>
           </div>
         `;
       } else {
         bubble.textContent = content;
       }
 
-      row.appendChild(bubble);
+      card.appendChild(meta);
+      card.appendChild(bubble);
+      shell.appendChild(avatar);
+      shell.appendChild(card);
+      row.appendChild(shell);
       chat.appendChild(row);
 
       if (shouldScroll) {
-        chat.scrollTop = chat.scrollHeight;
+        scrollChatToBottom();
       }
 
       return row;
     }
 
-    async function sendMessage() {
-      const text = messageInput.value.trim();
+    async function sendMessage(prefilledText = "") {
+      if (isSending) return;
+
+      const text = (prefilledText || messageInput.value).trim();
       if (!text) return;
 
       const project = getCurrentProject();
       if (!project) return;
 
+      isSending = true;
+      sendBtn.disabled = true;
+
       project.messages.push({ role: "user", content: text });
       saveProjects();
       addMessageToChat("user", text);
+
       messageInput.value = "";
+      autoResizeTextarea();
 
       const typingEl = addMessageToChat("ai", "", true, true);
 
@@ -526,19 +1238,24 @@
         });
 
         const data = await response.json();
-
         typingEl.remove();
 
         const aiText = data.reply || "Something went wrong.";
         project.messages.push({ role: "ai", content: aiText });
         saveProjects();
         addMessageToChat("ai", aiText);
+        renderProjects();
       } catch (error) {
         typingEl.remove();
-        const errorText = "Error: could not reach the server.";
+
+        const errorText = "There was a problem reaching the server.";
         project.messages.push({ role: "ai", content: errorText });
         saveProjects();
         addMessageToChat("ai", errorText);
+      } finally {
+        isSending = false;
+        sendBtn.disabled = false;
+        messageInput.focus();
       }
     }
 
@@ -548,7 +1265,14 @@
       return div.innerHTML;
     }
 
-    sendBtn.addEventListener("click", sendMessage);
+    function autoResizeTextarea() {
+      messageInput.style.height = "auto";
+      messageInput.style.height = Math.min(messageInput.scrollHeight, 220) + "px";
+    }
+
+    sendBtn.addEventListener("click", () => sendMessage());
+
+    messageInput.addEventListener("input", autoResizeTextarea);
 
     messageInput.addEventListener("keydown", (e) => {
       if (e.key === "Enter" && !e.shiftKey) {
@@ -557,8 +1281,14 @@
       }
     });
 
+    clearInputBtn.addEventListener("click", () => {
+      messageInput.value = "";
+      autoResizeTextarea();
+      messageInput.focus();
+    });
+
     newProjectBtn.addEventListener("click", () => {
-      createProject();
+      createProject("New Project");
     });
 
     renameBtn.addEventListener("click", () => {
@@ -581,10 +1311,10 @@
       const ok = confirm(`Delete "${project.name}"?`);
       if (!ok) return;
 
-      projects = projects.filter(p => p.id !== project.id);
+      projects = projects.filter((p) => p.id !== project.id);
 
       if (projects.length === 0) {
-        createProject();
+        createProject("New Project");
         return;
       }
 
@@ -596,6 +1326,13 @@
 
     toggleSidebar.addEventListener("click", () => {
       sidebar.classList.toggle("collapsed");
+    });
+
+    quickButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const prompt = btn.getAttribute("data-prompt") || "";
+        sendMessage(prompt);
+      });
     });
 
     loadProjects();
