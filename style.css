@@ -1,153 +1,109 @@
-* {
-  box-sizing: border-box;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GameDev AI</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside id="sidebar" class="sidebar">
+      <div class="sidebar-header">
+        <div class="brand-row">
+          <div class="brand-left">
+            <div class="brand-icon">G</div>
 
-body {
-  margin: 0;
-  font-family: Arial;
-  background: #0a0f1f;
-  color: white;
-}
+            <div class="brand-text">
+              <h1>GameDev AI</h1>
+              <p>Scripts, ideas, systems</p>
+            </div>
+          </div>
 
-.app {
-  display: flex;
-  height: 100vh;
-}
+          <button id="toggleSidebarBtn" class="sidebar-toggle-btn" title="Toggle sidebar">☰</button>
+        </div>
 
-/* SIDEBAR */
-.sidebar {
-  width: 260px;
-  background: #121a33;
-  padding: 15px;
-  display: flex;
-  flex-direction: column;
-  transition: 0.3s;
-}
+        <button id="newProjectBtn" class="new-project-btn">+ New Project</button>
+      </div>
 
-.sidebar.collapsed {
-  width: 80px;
-}
+      <div class="sidebar-section">
+        <div class="sidebar-label">Projects</div>
+        <div id="projectList" class="project-list"></div>
+      </div>
 
-/* TOP ROW */
-.top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
+      <div class="sidebar-footer">
+        <div class="pro-card">
+          <div class="pro-badge">Future Pro</div>
+          <h3>Upgrade later</h3>
+          <p>Saved prompts, better tools, exports, and premium features.</p>
+          <button class="pro-btn" disabled>Coming Soon</button>
+        </div>
+      </div>
+    </aside>
 
-.logo {
-  width: 40px;
-  height: 40px;
-  background: #7c8cff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 10px;
-  font-weight: bold;
-}
+    <main class="main-panel">
+      <div class="topbar">
+        <div class="topbar-left">
+          <span class="live-pill">● Live Workspace</span>
+        </div>
 
-/* TOGGLE BUTTON ALWAYS NEXT TO LOGO */
-.toggle {
-  background: none;
-  border: none;
-  color: white;
-  font-size: 18px;
-  cursor: pointer;
-}
+        <div class="topbar-right">
+          <span class="status-pill">AI Ready</span>
+          <button id="renameProjectBtn" class="top-btn primary-btn">Rename</button>
+          <button id="deleteProjectBtn" class="top-btn danger-btn">Delete</button>
+        </div>
+      </div>
 
-/* CONTENT */
-.sidebar-content {
-  margin-top: 20px;
-}
+      <section class="project-hero">
+        <h2 id="projectTitle">New Project</h2>
+        <p id="projectSubtitle">Start chatting to build your next Roblox idea.</p>
+      </section>
 
-.sidebar.collapsed .sidebar-content {
-  display: none;
-}
+      <section id="chatMessages" class="chat-messages">
+        <div class="message-row ai-row">
+          <div class="avatar ai-avatar">AI</div>
+          <div class="message-bubble ai-bubble">
+            Tell me what you want to build and I’ll help with scripts, ideas, mechanics, UI, balancing, bugs, and progression.
+          </div>
+        </div>
+      </section>
 
-/* BUTTON */
-#newProject {
-  width: 100%;
-  padding: 10px;
-  background: linear-gradient(45deg, #7c8cff, #9d6bff);
-  border: none;
-  border-radius: 10px;
-  color: white;
-  margin-top: 10px;
-  cursor: pointer;
-}
+      <div id="typingIndicator" class="typing-indicator hidden">
+        <div class="message-row ai-row">
+          <div class="avatar ai-avatar">AI</div>
+          <div class="message-bubble ai-bubble typing-bubble">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+      </div>
 
-/* PROJECTS */
-.projects {
-  margin-top: 20px;
-}
+      <section class="composer-section">
+        <div class="quick-actions">
+          <button class="quick-action-btn" data-fill="Give me a Roblox game idea">Game idea</button>
+          <button class="quick-action-btn" data-fill="Make me a collectible script">Collectible script</button>
+          <button class="quick-action-btn" data-fill="How can I monetize this game?">Monetization</button>
+          <button class="quick-action-btn" data-fill="Make me a fun game loop">Game loop</button>
+          <button class="quick-action-btn" data-fill="Make me an inventory system">Inventory system</button>
+        </div>
 
-.projects button {
-  width: 100%;
-  margin-bottom: 6px;
-  padding: 8px;
-  background: #1d2547;
-  border: none;
-  color: white;
-  border-radius: 8px;
-}
+        <form id="chatForm" class="chat-form">
+          <textarea
+            id="promptInput"
+            placeholder="Ask for scripts, mechanics, game ideas, UI help, balancing, bugs, progression systems, and more..."
+            rows="1"
+          ></textarea>
 
-/* MAIN */
-.main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
+          <div class="chat-form-actions">
+            <button type="button" id="clearBtn" class="secondary-btn">Clear</button>
+            <button type="submit" class="send-btn">Send Message</button>
+          </div>
+        </form>
+      </section>
+    </main>
+  </div>
 
-/* HEADER */
-.header {
-  display: flex;
-  justify-content: space-between;
-  padding: 12px 20px;
-  border-bottom: 1px solid #222;
-}
-
-/* TITLE SMALLER */
-.title {
-  padding: 15px 20px;
-}
-
-.title h1 {
-  font-size: 40px;
-  margin: 0;
-}
-
-/* CHAT */
-.chat {
-  flex: 1;
-  padding: 20px;
-  overflow-y: auto;
-}
-
-/* INPUT */
-.input-area {
-  display: flex;
-  padding: 10px;
-  border-top: 1px solid #222;
-}
-
-textarea {
-  flex: 1;
-  padding: 10px;
-  border-radius: 10px;
-  border: none;
-  resize: none;
-}
-
-button {
-  margin-left: 10px;
-  padding: 10px;
-  background: #7c8cff;
-  border: none;
-  color: white;
-  border-radius: 10px;
-  cursor: pointer;
-}
-
-.hidden {
-  display: none;
-}
+  <script src="script.js"></script>
+</body>
+</html>
