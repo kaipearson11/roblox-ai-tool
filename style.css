@@ -1,109 +1,577 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GameDev AI</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-  <div class="app-shell">
-    <aside id="sidebar" class="sidebar">
-      <div class="sidebar-header">
-        <div class="brand-row">
-          <div class="brand-left">
-            <div class="brand-icon">G</div>
+* {
+  box-sizing: border-box;
+}
 
-            <div class="brand-text">
-              <h1>GameDev AI</h1>
-              <p>Scripts, ideas, systems</p>
-            </div>
-          </div>
+:root {
+  --bg-1: #050816;
+  --bg-2: #0a1025;
+  --panel: rgba(8, 14, 35, 0.96);
+  --panel-2: rgba(12, 20, 48, 0.96);
+  --border: rgba(255, 255, 255, 0.08);
+  --text: #edf2ff;
+  --muted: #9ca7d3;
+  --accent: #7c8cff;
+  --accent-2: #9d6bff;
+  --danger: #ff6c84;
+  --shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
+}
 
-          <button id="toggleSidebarBtn" class="sidebar-toggle-btn" title="Toggle sidebar">☰</button>
-        </div>
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  font-family: Inter, Arial, sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at top, rgba(109, 124, 255, 0.18), transparent 30%),
+    linear-gradient(180deg, var(--bg-2), var(--bg-1));
+}
 
-        <button id="newProjectBtn" class="new-project-btn">+ New Project</button>
-      </div>
+body {
+  min-height: 100vh;
+}
 
-      <div class="sidebar-section">
-        <div class="sidebar-label">Projects</div>
-        <div id="projectList" class="project-list"></div>
-      </div>
+button,
+textarea {
+  font: inherit;
+}
 
-      <div class="sidebar-footer">
-        <div class="pro-card">
-          <div class="pro-badge">Future Pro</div>
-          <h3>Upgrade later</h3>
-          <p>Saved prompts, better tools, exports, and premium features.</p>
-          <button class="pro-btn" disabled>Coming Soon</button>
-        </div>
-      </div>
-    </aside>
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  gap: 16px;
+  padding: 18px;
+}
 
-    <main class="main-panel">
-      <div class="topbar">
-        <div class="topbar-left">
-          <span class="live-pill">● Live Workspace</span>
-        </div>
+/* SIDEBAR */
+.sidebar {
+  width: 310px;
+  min-width: 310px;
+  background: linear-gradient(180deg, rgba(10, 16, 42, 0.98), rgba(4, 9, 30, 0.98));
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow);
+  transition: width 0.25s ease, min-width 0.25s ease, padding 0.25s ease;
+  overflow: hidden;
+}
 
-        <div class="topbar-right">
-          <span class="status-pill">AI Ready</span>
-          <button id="renameProjectBtn" class="top-btn primary-btn">Rename</button>
-          <button id="deleteProjectBtn" class="top-btn danger-btn">Delete</button>
-        </div>
-      </div>
+.sidebar.collapsed {
+  width: 94px;
+  min-width: 94px;
+  padding: 18px 12px;
+}
 
-      <section class="project-hero">
-        <h2 id="projectTitle">New Project</h2>
-        <p id="projectSubtitle">Start chatting to build your next Roblox idea.</p>
-      </section>
+.sidebar-header {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
 
-      <section id="chatMessages" class="chat-messages">
-        <div class="message-row ai-row">
-          <div class="avatar ai-avatar">AI</div>
-          <div class="message-bubble ai-bubble">
-            Tell me what you want to build and I’ll help with scripts, ideas, mechanics, UI, balancing, bugs, and progression.
-          </div>
-        </div>
-      </section>
+.brand-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 0;
+}
 
-      <div id="typingIndicator" class="typing-indicator hidden">
-        <div class="message-row ai-row">
-          <div class="avatar ai-avatar">AI</div>
-          <div class="message-bubble ai-bubble typing-bubble">
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
-        </div>
-      </div>
+.brand-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
 
-      <section class="composer-section">
-        <div class="quick-actions">
-          <button class="quick-action-btn" data-fill="Give me a Roblox game idea">Game idea</button>
-          <button class="quick-action-btn" data-fill="Make me a collectible script">Collectible script</button>
-          <button class="quick-action-btn" data-fill="How can I monetize this game?">Monetization</button>
-          <button class="quick-action-btn" data-fill="Make me a fun game loop">Game loop</button>
-          <button class="quick-action-btn" data-fill="Make me an inventory system">Inventory system</button>
-        </div>
+.brand-icon {
+  width: 52px;
+  height: 52px;
+  min-width: 52px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: white;
+  box-shadow: 0 10px 24px rgba(124, 140, 255, 0.28);
+}
 
-        <form id="chatForm" class="chat-form">
-          <textarea
-            id="promptInput"
-            placeholder="Ask for scripts, mechanics, game ideas, UI help, balancing, bugs, progression systems, and more..."
-            rows="1"
-          ></textarea>
+.brand-text {
+  min-width: 0;
+}
 
-          <div class="chat-form-actions">
-            <button type="button" id="clearBtn" class="secondary-btn">Clear</button>
-            <button type="submit" class="send-btn">Send Message</button>
-          </div>
-        </form>
-      </section>
-    </main>
-  </div>
+.brand-text h1 {
+  margin: 0;
+  font-size: 1.28rem;
+  line-height: 1.1;
+  white-space: nowrap;
+}
 
-  <script src="script.js"></script>
-</body>
-</html>
+.brand-text p {
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.sidebar-toggle-btn {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.new-project-btn {
+  width: 100%;
+  border: none;
+  border-radius: 16px;
+  padding: 13px 16px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(124, 140, 255, 0.22);
+}
+
+.sidebar-section {
+  flex: 1;
+  min-height: 0;
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-label {
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.76rem;
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+
+.project-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.project-card {
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid transparent;
+  border-radius: 18px;
+  padding: 14px;
+  cursor: pointer;
+  transition: 0.2s ease;
+  text-align: left;
+  color: white;
+}
+
+.project-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.project-card.active {
+  border-color: rgba(124, 140, 255, 0.45);
+  background: linear-gradient(180deg, rgba(124, 140, 255, 0.18), rgba(124, 140, 255, 0.08));
+}
+
+.project-card-title {
+  font-size: 0.98rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.project-card-sub {
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.sidebar-footer {
+  margin-top: 16px;
+}
+
+.pro-card {
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  padding: 16px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(124,140,255,0.07));
+}
+
+.pro-badge {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(124, 140, 255, 0.14);
+  color: #dce3ff;
+  font-size: 0.74rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.pro-card h3 {
+  margin: 12px 0 8px;
+  font-size: 1.1rem;
+}
+
+.pro-card p {
+  margin: 0 0 14px;
+  font-size: 0.92rem;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.pro-btn {
+  width: 100%;
+  border: none;
+  border-radius: 14px;
+  padding: 12px 14px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: white;
+  font-weight: 700;
+  opacity: 0.92;
+}
+
+/* COLLAPSED SIDEBAR */
+.sidebar.collapsed .brand-text,
+.sidebar.collapsed .new-project-btn,
+.sidebar.collapsed .sidebar-label,
+.sidebar.collapsed .sidebar-footer,
+.sidebar.collapsed .project-card-sub {
+  display: none;
+}
+
+.sidebar.collapsed .brand-row {
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sidebar.collapsed .brand-left {
+  gap: 8px;
+}
+
+.sidebar.collapsed .project-card {
+  padding: 12px 8px;
+  text-align: center;
+}
+
+.sidebar.collapsed .project-card-title {
+  font-size: 0.74rem;
+  line-height: 1.15;
+}
+
+/* MAIN */
+.main-panel {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, rgba(8, 14, 36, 0.98), rgba(3, 8, 27, 0.98));
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 22px 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.topbar-left,
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.live-pill {
+  color: #d5dcff;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.status-pill {
+  padding: 9px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border);
+  font-size: 0.9rem;
+}
+
+.top-btn,
+.secondary-btn,
+.send-btn {
+  border: none;
+  border-radius: 14px;
+  padding: 11px 16px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.primary-btn {
+  background: linear-gradient(135deg, var(--accent), #8c79ff);
+  color: white;
+}
+
+.danger-btn {
+  background: rgba(255, 108, 132, 0.14);
+  color: #ffd3dc;
+  border: 1px solid rgba(255, 108, 132, 0.22);
+}
+
+/* HERO */
+.project-hero {
+  padding: 14px 22px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.project-hero h2 {
+  margin: 0;
+  font-size: clamp(1.9rem, 3.2vw, 2.8rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.project-hero p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 0.98rem;
+}
+
+/* CHAT */
+.chat-messages {
+  flex: 1;
+  min-height: 200px;
+  overflow-y: auto;
+  padding: 16px 22px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.message-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.user-row {
+  justify-content: flex-end;
+}
+
+.user-row .avatar {
+  order: 2;
+}
+
+.user-row .message-bubble {
+  order: 1;
+}
+
+.avatar {
+  width: 42px;
+  height: 42px;
+  min-width: 42px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+}
+
+.ai-avatar {
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: white;
+}
+
+.user-avatar {
+  background: rgba(255, 255, 255, 0.12);
+  color: white;
+}
+
+.message-bubble {
+  max-width: min(760px, 72%);
+  border-radius: 18px;
+  padding: 16px 18px;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.ai-bubble {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border);
+}
+
+.user-bubble {
+  background: linear-gradient(135deg, rgba(124, 140, 255, 0.24), rgba(157, 107, 255, 0.18));
+  border: 1px solid rgba(124, 140, 255, 0.26);
+}
+
+.typing-indicator {
+  padding: 0 22px 6px;
+}
+
+.typing-bubble {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.typing-bubble span {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #d0d8ff;
+  opacity: 0.45;
+  animation: typingBounce 1s infinite ease-in-out;
+}
+
+.typing-bubble span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.typing-bubble span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes typingBounce {
+  0%, 80%, 100% {
+    transform: translateY(0);
+    opacity: 0.35;
+  }
+  40% {
+    transform: translateY(-5px);
+    opacity: 1;
+  }
+}
+
+/* COMPOSER */
+.composer-section {
+  padding: 0 22px 22px;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.quick-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 12px 0 12px;
+}
+
+.quick-action-btn {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.04);
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.quick-action-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.chat-form {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.03));
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 16px;
+}
+
+#promptInput {
+  width: 100%;
+  min-height: 74px;
+  max-height: 220px;
+  resize: none;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--text);
+  font-size: 1.02rem;
+  line-height: 1.5;
+}
+
+#promptInput::placeholder {
+  color: #8f99c7;
+}
+
+.chat-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.secondary-btn {
+  background: rgba(255, 255, 255, 0.06);
+  color: white;
+  border: 1px solid var(--border);
+}
+
+.send-btn {
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: white;
+  box-shadow: 0 10px 24px rgba(124, 140, 255, 0.22);
+}
+
+/* MOBILE */
+@media (max-width: 900px) {
+  .app-shell {
+    padding: 10px;
+    gap: 10px;
+  }
+
+  .sidebar {
+    position: fixed;
+    left: 10px;
+    top: 10px;
+    bottom: 10px;
+    z-index: 1000;
+  }
+
+  .main-panel {
+    width: 100%;
+  }
+
+  .topbar {
+    padding: 14px 16px 10px;
+  }
+
+  .project-hero,
+  .chat-messages,
+  .typing-indicator,
+  .composer-section {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .project-hero h2 {
+    font-size: 2rem;
+  }
+
+  .message-bubble {
+    max-width: 100%;
+  }
+}
