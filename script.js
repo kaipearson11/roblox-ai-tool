@@ -17,8 +17,8 @@ const projectSubtitle = document.getElementById("projectSubtitle");
 
 const quickActionButtons = document.querySelectorAll(".quick-action-btn");
 
-const STORAGE_KEY = "gamedevai_projects_v6";
-const SIDEBAR_KEY = "gamedevai_sidebar_collapsed_v6";
+const STORAGE_KEY = "gamedevai_projects_v7";
+const SIDEBAR_KEY = "gamedevai_sidebar_collapsed_v7";
 
 let projects = [];
 let currentProjectId = null;
@@ -152,7 +152,7 @@ function renderAll() {
 
 function autoResizeTextarea() {
   promptInput.style.height = "auto";
-  promptInput.style.height = Math.min(promptInput.scrollHeight, 220) + "px";
+  promptInput.style.height = Math.min(promptInput.scrollHeight, 180) + "px";
 }
 
 function saveSidebarState() {
@@ -202,9 +202,7 @@ function addAiMessage(text) {
 
 async function sendPrompt(promptText) {
   addUserMessage(promptText);
-
   typingIndicator.classList.remove("hidden");
-  chatMessages.scrollTop = chatMessages.scrollHeight;
 
   try {
     const response = await fetch("/generate", {
@@ -232,6 +230,7 @@ async function sendPrompt(promptText) {
     addAiMessage("Error: " + error.message);
   } finally {
     typingIndicator.classList.add("hidden");
+    chatMessages.scrollTop = chatMessages.scrollHeight;
   }
 }
 
@@ -278,6 +277,7 @@ function deleteCurrentProject() {
 function clearInput() {
   promptInput.value = "";
   autoResizeTextarea();
+  promptInput.focus();
 }
 
 toggleSidebarBtn.addEventListener("click", () => {
@@ -298,7 +298,7 @@ quickActionButtons.forEach(button => {
   });
 });
 
-chatForm.addEventListener("submit", async (event) => {
+chatForm.addEventListener("submit", async event => {
   event.preventDefault();
 
   const promptText = promptInput.value.trim();
@@ -324,3 +324,4 @@ ensureAtLeastOneProject();
 loadSidebarState();
 renderAll();
 autoResizeTextarea();
+typingIndicator.classList.add("hidden");
