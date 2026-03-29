@@ -1,0 +1,65 @@
+[
+  {
+    "id": "user_1774748017438_vks981gm",
+    "username": "kaipearson11",
+    "passwordHash": "$2b$10$Bk8eal/RKr2lWxDn6RYOx.47UsVy/HuyySN2hX1Q/t6JtD5VruYq2",
+    "projects": [
+      {
+        "id": "p_1774748130788_p6elq54",
+        "title": "New Project",
+        "messages": [
+          {
+            "role": "ai",
+            "content": "Hey — I’m GameDev AI. I can help you make Roblox scripts, fix bugs, brainstorm ideas, build systems, and plan your game."
+          }
+        ],
+        "createdAt": 1774748130788
+      },
+      {
+        "id": "p_1774748017444_fzypq0y",
+        "title": "New Project",
+        "messages": [
+          {
+            "role": "ai",
+            "content": "Chat cleared. Ask me for a new script, idea, or fix."
+          },
+          {
+            "role": "user",
+            "content": "hi"
+          },
+          {
+            "role": "ai",
+            "content": "Hi! How can I help you with your Roblox game today?"
+          },
+          {
+            "role": "user",
+            "content": "heleadldsfj"
+          },
+          {
+            "role": "ai",
+            "content": "Looks like that message got jumbled! How can I assist you with your Roblox game or scripting? Feel free to ask anything."
+          }
+        ],
+        "createdAt": 1774748017444
+      }
+    ]
+  },
+  {
+    "id": "user_1774748144106_bwaos9kg",
+    "username": "1kaipearson11",
+    "passwordHash": "$2b$10$xAIXy6rEsMAleuCg8YaO6.9z.ZFvl9OmeJD0p.NnlVa8r4n2O6Sfa",
+    "projects": [
+      {
+        "id": "p_1774748144129_r3yaxy1",
+        "title": "New Project",
+        "messages": [
+          {
+            "role": "ai",
+            "content": "Hey — I’m GameDev AI. I can help you make Roblox scripts, fix bugs, brainstorm ideas, build systems, and plan your game."
+          }
+        ],
+        "createdAt": 1774748144129
+      }
+    ]
+  }
+]

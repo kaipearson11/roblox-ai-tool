@@ -7,96 +7,604 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <div id="authOverlay" class="auth-overlay">
+    <div class="auth-card">
+      <div class="auth-logo">G</div>
+      <h1>GameDev AI</h1>
+      <p class="auth-sub">Log in or sign up to save your projects.</p>
+
+      <div class="auth-tabs">
+        <button id="loginTabBtn" class="auth-tab active" type="button">Log In</button>
+        <button id="signupTabBtn" class="auth-tab" type="button">Sign Up</button>
+      </div>
+
+      <form id="authForm" class="auth-form">
+        <input id="authUsername" type="text" placeholder="Username" autocomplete="username" required />
+        <input id="authPassword" type="password" placeholder="Password" autocomplete="current-password" required />
+        <button id="authSubmitBtn" type="submit" class="auth-submit">Log In</button>
+      </form>
+
+      <div id="authError" class="auth-error"></div>
+    </div>
+  </div>
+
   <div class="app-shell">
     <aside id="sidebar" class="sidebar">
       <div class="sidebar-header">
         <div class="brand-row">
           <div class="brand-left">
             <div class="brand-icon">G</div>
-
             <div class="brand-text">
               <h1>GameDev AI</h1>
               <p>Scripts, ideas, systems</p>
             </div>
           </div>
 
-          <button id="toggleSidebarBtn" class="sidebar-toggle-btn" title="Toggle sidebar">☰</button>
+          <button id="toggleSidebarBtn" class="sidebar-toggle-btn" title="Toggle sidebar" type="button">☰</button>
         </div>
 
-        <button id="newProjectBtn" class="new-project-btn">+ New Project</button>
+        <button id="newProjectBtn" class="new-project-btn" type="button">
+          <span>+ New Project</span>
+        </button>
       </div>
 
       <div class="sidebar-section">
-        <div class="sidebar-label">Projects</div>
+        <div class="section-title">Projects</div>
         <div id="projectList" class="project-list"></div>
       </div>
 
-      <div class="sidebar-footer">
-        <div class="pro-card">
-          <div class="pro-badge">Future Pro</div>
-          <h3>Upgrade later</h3>
-          <p>Saved prompts, better tools, exports, and premium features.</p>
-          <button class="pro-btn" disabled>Coming Soon</button>
+      <div class="plan-card">
+        <div class="plan-badge">PRO</div>
+        <div class="plan-title">Creative Power</div>
+        <div class="plan-text">
+          Bigger answers, smarter tools, more advanced game systems, and premium features later.
         </div>
+        <button class="upgrade-btn" type="button">Upgrade Soon</button>
       </div>
     </aside>
 
-    <main class="main-panel">
+    <main class="main">
       <div class="topbar">
         <div class="topbar-left">
-          <span class="live-pill">● Live Workspace</span>
+          <div id="projectTitle" class="topbar-title">New Project</div>
+          <div class="topbar-subtitle">Ask for scripts, ideas, fixes, systems, UI, balancing, and more.</div>
         </div>
 
-        <div class="topbar-right">
-          <span class="status-pill">AI Ready</span>
-          <button id="renameProjectBtn" class="top-btn primary-btn">Rename</button>
-          <button id="deleteProjectBtn" class="top-btn danger-btn">Delete</button>
+        <div class="topbar-actions">
+          <div id="userBadge" class="user-badge">Guest</div>
+          <button id="renameProjectBtn" class="top-btn" type="button">Rename</button>
+          <button id="clearChatBtn" class="top-btn" type="button">Clear Chat</button>
+          <button id="logoutBtn" class="top-btn danger-btn" type="button">Log Out</button>
         </div>
       </div>
 
-      <section class="project-hero">
-        <h2 id="projectTitle">New Project</h2>
-        <p id="projectSubtitle">Start chatting to build your next Roblox idea.</p>
-      </section>
+      <div class="chat-wrap">
+        <div id="chat" class="chat"></div>
+      </div>
 
-      <section id="chatMessages" class="chat-messages"></section>
-
-      <div id="typingIndicator" class="typing-indicator hidden">
-        <div class="message-row ai-row">
-          <div class="avatar ai-avatar">AI</div>
-          <div class="message-bubble ai-bubble typing-bubble">
-            <span></span>
-            <span></span>
-            <span></span>
+      <div class="input-area-wrap">
+        <form id="chatForm" class="input-area">
+          <div class="input-top">
+            <textarea
+              id="messageInput"
+              placeholder="Ask GameDev AI to make a script, fix code, or help with your game idea..."
+            ></textarea>
+            <button type="submit" class="send-btn">➜</button>
           </div>
-        </div>
-      </div>
-
-      <section class="composer-section">
-        <div class="quick-actions">
-          <button class="quick-action-btn" data-fill="Give me a Roblox game idea">Game idea</button>
-          <button class="quick-action-btn" data-fill="Make me a collectible script">Collectible script</button>
-          <button class="quick-action-btn" data-fill="How can I monetize this game?">Monetization</button>
-          <button class="quick-action-btn" data-fill="Make me a fun game loop">Game loop</button>
-          <button class="quick-action-btn" data-fill="Make me an inventory system">Inventory system</button>
-        </div>
-
-        <form id="chatForm" class="chat-form">
-          <textarea
-            id="promptInput"
-            placeholder="Ask for scripts, mechanics, game ideas, UI help, balancing, bugs, progression systems, and more..."
-            rows="1"
-          ></textarea>
-
-          <div class="chat-form-actions">
-            <button type="button" id="clearBtn" class="secondary-btn">Clear</button>
-            <button type="submit" class="send-btn">Send Message</button>
+          <div class="input-hint">
+            <span>Enter = send</span>
+            <span>Shift + Enter = new line</span>
           </div>
         </form>
-      </section>
+      </div>
     </main>
   </div>
 
-  <script src="script.js"></script>
+  <script>
+    const authOverlay = document.getElementById("authOverlay");
+    const authForm = document.getElementById("authForm");
+    const authUsername = document.getElementById("authUsername");
+    const authPassword = document.getElementById("authPassword");
+    const authSubmitBtn = document.getElementById("authSubmitBtn");
+    const authError = document.getElementById("authError");
+    const loginTabBtn = document.getElementById("loginTabBtn");
+    const signupTabBtn = document.getElementById("signupTabBtn");
+
+    const chat = document.getElementById("chat");
+    const chatForm = document.getElementById("chatForm");
+    const messageInput = document.getElementById("messageInput");
+    const projectList = document.getElementById("projectList");
+    const newProjectBtn = document.getElementById("newProjectBtn");
+    const projectTitle = document.getElementById("projectTitle");
+    const clearChatBtn = document.getElementById("clearChatBtn");
+    const renameProjectBtn = document.getElementById("renameProjectBtn");
+    const toggleSidebarBtn = document.getElementById("toggleSidebarBtn");
+    const sidebar = document.getElementById("sidebar");
+    const logoutBtn = document.getElementById("logoutBtn");
+    const userBadge = document.getElementById("userBadge");
+
+    let authMode = "login";
+    let currentUser = null;
+    let projects = [];
+    let activeProjectId = null;
+    let isThinking = false;
+
+    function makeId() {
+      return "p_" + Date.now() + "_" + Math.random().toString(36).slice(2, 9);
+    }
+
+    function escapeHtml(text) {
+      return String(text)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function stripCodeBlocks(text) {
+      return String(text).replace(/```[\s\S]*?```/g, "[code]");
+    }
+
+    function autoResizeTextarea() {
+      messageInput.style.height = "auto";
+      messageInput.style.height = Math.min(messageInput.scrollHeight, 180) + "px";
+    }
+
+    function scrollChatToBottom() {
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function getActiveProject() {
+      return projects.find((p) => p.id === activeProjectId) || null;
+    }
+
+    async function saveProjectsToServer() {
+      if (!currentUser) return;
+
+      await fetch("/api/projects", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ projects })
+      });
+    }
+
+    function setAuthMode(mode) {
+      authMode = mode;
+      authError.textContent = "";
+
+      if (mode === "login") {
+        loginTabBtn.classList.add("active");
+        signupTabBtn.classList.remove("active");
+        authSubmitBtn.textContent = "Log In";
+        authPassword.autocomplete = "current-password";
+      } else {
+        signupTabBtn.classList.add("active");
+        loginTabBtn.classList.remove("active");
+        authSubmitBtn.textContent = "Sign Up";
+        authPassword.autocomplete = "new-password";
+      }
+    }
+
+    function showAuth() {
+      authOverlay.classList.remove("hidden");
+    }
+
+    function hideAuth() {
+      authOverlay.classList.add("hidden");
+    }
+
+    function createProject(title = "New Project") {
+      const project = {
+        id: makeId(),
+        title,
+        messages: [
+          {
+            role: "ai",
+            content: "Hey — I’m GameDev AI. I can help you make Roblox scripts, fix bugs, brainstorm ideas, build systems, and plan your game."
+          }
+        ],
+        createdAt: Date.now()
+      };
+
+      projects.unshift(project);
+      activeProjectId = project.id;
+      renderProjects();
+      renderActiveProject();
+      saveProjectsToServer();
+    }
+
+    function renderProjects() {
+      projectList.innerHTML = "";
+
+      projects.forEach((project) => {
+        const card = document.createElement("div");
+        card.className = "project-card" + (project.id === activeProjectId ? " active" : "");
+        card.dataset.id = project.id;
+
+        const lastRealMessage = [...project.messages].reverse().find((m) => m.role === "user" || m.role === "ai");
+        const previewText = lastRealMessage
+          ? stripCodeBlocks(lastRealMessage.content).slice(0, 60)
+          : "No messages yet";
+
+        card.innerHTML = `
+          <div class="project-name">${escapeHtml(project.title)}</div>
+          <div class="project-preview">${escapeHtml(previewText)}</div>
+        `;
+
+        card.addEventListener("click", () => {
+          activeProjectId = project.id;
+          renderProjects();
+          renderActiveProject();
+        });
+
+        projectList.appendChild(card);
+      });
+    }
+
+    function createTextPart(text) {
+      const div = document.createElement("div");
+      div.textContent = text;
+      return div;
+    }
+
+    function createCodeBlock(code, language = "code") {
+      const wrapper = document.createElement("div");
+      wrapper.className = "code-block";
+
+      const top = document.createElement("div");
+      top.className = "code-top";
+
+      const label = document.createElement("span");
+      label.textContent = language || "code";
+
+      const copyBtn = document.createElement("button");
+      copyBtn.className = "copy-btn";
+      copyBtn.textContent = "Copy";
+
+      copyBtn.addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(code);
+          copyBtn.textContent = "Copied";
+          setTimeout(() => {
+            copyBtn.textContent = "Copy";
+          }, 1200);
+        } catch {
+          copyBtn.textContent = "Failed";
+          setTimeout(() => {
+            copyBtn.textContent = "Copy";
+          }, 1200);
+        }
+      });
+
+      top.appendChild(label);
+      top.appendChild(copyBtn);
+
+      const pre = document.createElement("pre");
+      pre.className = "code-content";
+
+      const codeEl = document.createElement("code");
+      codeEl.textContent = code;
+      pre.appendChild(codeEl);
+
+      wrapper.appendChild(top);
+      wrapper.appendChild(pre);
+
+      return wrapper;
+    }
+
+    function renderMessageContent(container, content) {
+      const regex = /```(\w+)?\n?([\s\S]*?)```/g;
+      let lastIndex = 0;
+      let match;
+
+      while ((match = regex.exec(content)) !== null) {
+        const before = content.slice(lastIndex, match.index);
+        if (before.trim()) {
+          container.appendChild(createTextPart(before));
+        }
+
+        const language = match[1] || "code";
+        const code = match[2].trim();
+        container.appendChild(createCodeBlock(code, language));
+
+        lastIndex = regex.lastIndex;
+      }
+
+      const after = content.slice(lastIndex);
+      if (after.trim()) {
+        container.appendChild(createTextPart(after));
+      }
+    }
+
+    function addMessageToUI(role, content) {
+      const row = document.createElement("div");
+      row.className = "row " + role;
+
+      const bubble = document.createElement("div");
+      bubble.className = "bubble";
+
+      renderMessageContent(bubble, content);
+
+      row.appendChild(bubble);
+      chat.appendChild(row);
+    }
+
+    function renderActiveProject() {
+      const project = getActiveProject();
+      if (!project) {
+        chat.innerHTML = "";
+        projectTitle.textContent = "No Project";
+        return;
+      }
+
+      projectTitle.textContent = project.title;
+      chat.innerHTML = "";
+
+      project.messages.forEach((message) => {
+        addMessageToUI(message.role, message.content);
+      });
+
+      scrollChatToBottom();
+    }
+
+    async function addMessage(role, content) {
+      const project = getActiveProject();
+      if (!project) return;
+
+      project.messages.push({ role, content });
+      addMessageToUI(role, content);
+      renderProjects();
+      scrollChatToBottom();
+      await saveProjectsToServer();
+    }
+
+    function showTyping() {
+      if (isThinking) return;
+      isThinking = true;
+
+      const row = document.createElement("div");
+      row.className = "row ai";
+      row.id = "typingRow";
+
+      const bubble = document.createElement("div");
+      bubble.className = "bubble";
+
+      const typing = document.createElement("div");
+      typing.className = "typing";
+      typing.innerHTML = `
+        <span class="typing-dot"></span>
+        <span class="typing-dot"></span>
+        <span class="typing-dot"></span>
+      `;
+
+      bubble.appendChild(typing);
+      row.appendChild(bubble);
+      chat.appendChild(row);
+      scrollChatToBottom();
+    }
+
+    function removeTyping() {
+      const typingRow = document.getElementById("typingRow");
+      if (typingRow) typingRow.remove();
+      isThinking = false;
+    }
+
+    function buildHistoryForAPI(messages) {
+      return messages
+        .filter((m) => m.role === "user" || m.role === "ai")
+        .slice(-12)
+        .map((m) => ({
+          role: m.role === "ai" ? "assistant" : "user",
+          content: m.content
+        }));
+    }
+
+    async function sendMessage() {
+      const message = messageInput.value.trim();
+      if (!message || isThinking) return;
+
+      await addMessage("user", message);
+      messageInput.value = "";
+      autoResizeTextarea();
+
+      showTyping();
+
+      try {
+        const project = getActiveProject();
+        const history = buildHistoryForAPI(project.messages.slice(0, -1));
+
+        const res = await fetch("/generate", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            prompt: message,
+            history
+          })
+        });
+
+        const data = await res.json();
+        removeTyping();
+
+        if (!res.ok) {
+          await addMessage("ai", data.error || "Something went wrong.");
+          return;
+        }
+
+        await addMessage("ai", data.response || "No response.");
+      } catch (error) {
+        removeTyping();
+        await addMessage("ai", "Error talking to AI.");
+        console.error(error);
+      }
+    }
+
+    async function loadProjects() {
+      const res = await fetch("/api/projects");
+      const data = await res.json();
+
+      if (!res.ok) {
+        projects = [];
+        activeProjectId = null;
+        return;
+      }
+
+      projects = data.projects || [];
+
+      if (!projects.length) {
+        createProject("New Project");
+      } else {
+        activeProjectId = projects[0].id;
+        renderProjects();
+        renderActiveProject();
+      }
+    }
+
+    async function checkAuth() {
+      try {
+        const res = await fetch("/api/me");
+        const data = await res.json();
+
+        if (data.loggedIn) {
+          currentUser = data.user;
+          userBadge.textContent = currentUser.username;
+          hideAuth();
+          await loadProjects();
+        } else {
+          currentUser = null;
+          userBadge.textContent = "Guest";
+          showAuth();
+        }
+      } catch (error) {
+        console.error(error);
+        showAuth();
+      }
+    }
+
+    loginTabBtn.addEventListener("click", () => setAuthMode("login"));
+    signupTabBtn.addEventListener("click", () => setAuthMode("signup"));
+
+    authForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      authError.textContent = "";
+
+      const username = authUsername.value.trim();
+      const password = authPassword.value;
+
+      if (!username || !password) {
+        authError.textContent = "Enter a username and password.";
+        return;
+      }
+
+      const endpoint = authMode === "login" ? "/api/login" : "/api/signup";
+
+      try {
+        const res = await fetch(endpoint, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ username, password })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          authError.textContent = data.error || "Something went wrong.";
+          return;
+        }
+
+        currentUser = data.user;
+        userBadge.textContent = currentUser.username;
+        authUsername.value = "";
+        authPassword.value = "";
+        hideAuth();
+        await loadProjects();
+      } catch (error) {
+        console.error(error);
+        authError.textContent = "Could not connect to server.";
+      }
+    });
+
+    logoutBtn.addEventListener("click", async () => {
+      try {
+        await fetch("/api/logout", { method: "POST" });
+      } catch (error) {
+        console.error(error);
+      }
+
+      currentUser = null;
+      projects = [];
+      activeProjectId = null;
+      userBadge.textContent = "Guest";
+      chat.innerHTML = "";
+      projectList.innerHTML = "";
+      projectTitle.textContent = "New Project";
+      showAuth();
+    });
+
+    newProjectBtn.addEventListener("click", () => {
+      createProject("New Project");
+    });
+
+    clearChatBtn.addEventListener("click", async () => {
+      const project = getActiveProject();
+      if (!project) return;
+
+      project.messages = [
+        {
+          role: "ai",
+          content: "Chat cleared. Ask me for a new script, idea, or fix."
+        }
+      ];
+
+      renderProjects();
+      renderActiveProject();
+      await saveProjectsToServer();
+    });
+
+    renameProjectBtn.addEventListener("click", async () => {
+      const project = getActiveProject();
+      if (!project) return;
+
+      const newName = prompt("Rename project:", project.title);
+      if (!newName || !newName.trim()) return;
+
+      project.title = newName.trim();
+      renderProjects();
+      renderActiveProject();
+      await saveProjectsToServer();
+    });
+
+    toggleSidebarBtn.addEventListener("click", () => {
+      sidebar.classList.toggle("collapsed");
+    });
+
+    chatForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      await sendMessage();
+    });
+
+    messageInput.addEventListener("input", autoResizeTextarea);
+
+    messageInput.addEventListener("keydown", async (e) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        await sendMessage();
+      }
+    });
+
+    async function init() {
+      setAuthMode("login");
+      autoResizeTextarea();
+      await checkAuth();
+    }
+
+    init();
+  </script>
 </body>
 </html>
